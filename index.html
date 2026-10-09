@@ -17,7 +17,7 @@
     -webkit-font-smoothing:antialiased;
     width:100%;max-width:100%;overflow-x:hidden}
 
-  .wrap{width:100%;max-width:1400px;margin:0 auto;padding:12px;overflow-x:hidden}
+  .wrap{width:100%;max-width:1200px;margin:0 auto;padding:12px;overflow-x:hidden}
 
   .header{
     background:var(--card);border:1px solid var(--border);
@@ -32,68 +32,39 @@
   .header h1{margin:0;font-size:18px;font-weight:700;line-height:1.3;word-wrap:break-word}
   .header .subtitle{margin:6px 0 0;font-size:13px;color:#667085;font-weight:500}
 
-  .sortbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
-  .sortbar label{font-size:13px;color:#475467;font-weight:500}
-  .sortbar select{
-    padding:8px 10px;border:1px solid var(--border);border-radius:8px;
-    background:var(--card);font-size:14px;color:var(--text);
-    outline:none;cursor:pointer;max-width:100%;flex:1 1 160px;
-  }
-  .sortbar .dir{
-    padding:8px 10px;border:1px solid var(--border);border-radius:8px;
-    background:var(--card);font-size:13px;cursor:pointer;white-space:nowrap;
-  }
-
-  /* Vue cartes */
-  .cards{display:grid;grid-template-columns:1fr;gap:10px}
+  /* Cartes */
+  .cards{display:grid;grid-template-columns:1fr;gap:12px}
   .card{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
-    padding:12px 14px;max-width:100%;word-wrap:break-word;
+    padding:16px 18px;max-width:100%;word-wrap:break-word;
+    display:flex;flex-direction:column;gap:10px;
+    transition:transform .15s, box-shadow .15s;
   }
-  .card h3{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--accent);word-break:break-word}
-  .card .row{
-    display:grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--border);
-    font-size: 14px;
+  .card:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(16,24,40,.08),0 12px 28px rgba(16,24,40,.10)}
+  .card h3{
+    margin:0;font-size:16px;font-weight:600;color:#344054;
+    line-height:1.35;word-break:break-word;
   }
-  .card .row:last-child{border-bottom:none}
-  .card .row .k{
-    color:#475467;font-size:13.5px;word-break:break-word;
-    min-width:0;line-height:1.3;
+  .card .value{
+    font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;
+    letter-spacing:-0.5px;line-height:1.1;
   }
-  .card .row .v{
-    text-align:right;font-weight:700;color:var(--accent);
-    font-variant-numeric:tabular-nums;white-space:nowrap;font-size:15px;
+  .card .bar{
+    width:100%;height:6px;background:#eef1f6;border-radius:3px;
+    overflow:hidden;
   }
-  .card .row .v.empty{color:var(--muted);font-weight:500}
-
-  /* Vue tableau */
-  .table-wrap{
-    display:none;background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);box-shadow:var(--shadow);
-    overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;
+  .card .bar span{
+    display:block;height:100%;border-radius:3px;
+    transition:width .4s ease;
   }
-  table{width:100%;border-collapse:collapse;font-size:14px;min-width:0}
-  thead th{
-    position:sticky;top:0;background:var(--accent);color:#fff;
-    text-align:left;padding:10px 12px;font-weight:600;
-    white-space:nowrap;cursor:pointer;user-select:none;
-  }
-  thead th:hover{background:#1558b0}
-  thead th:not(:first-child){text-align:right}
-  thead th .arrow{display:inline-block;margin-left:6px;opacity:.4;font-size:11px}
-  thead th.sorted .arrow{opacity:1}
-  tbody td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:top;word-break:break-word}
-  tbody td:first-child{font-weight:600;color:#344054}
-  tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
-  tbody td.empty{color:var(--muted);font-weight:400}
-  tbody tr:nth-child(even){background:#fafbfd}
-  tbody tr:hover{background:#eef4ff}
+  .card.high .value{color:var(--success)}
+  .card.high .bar span{background:var(--success)}
+  .card.mid .value{color:var(--warning)}
+  .card.mid .bar span{background:var(--warning)}
+  .card.low .value{color:var(--danger)}
+  .card.low .bar span{background:var(--danger)}
+  .card.unknown .value{color:var(--muted);font-weight:500}
 
   /* Loader */
   .loading{
@@ -115,16 +86,10 @@
   body.layout-mobile .header h1{font-size:22px;line-height:1.3}
   body.layout-mobile .header .subtitle{font-size:15px;margin-top:8px}
   body.layout-mobile .header .banner{margin-bottom:14px}
-  body.layout-mobile .sortbar{gap:10px;margin-bottom:16px}
-  body.layout-mobile .sortbar label{font-size:15px}
-  body.layout-mobile .sortbar select{font-size:16px;padding:10px 12px}
-  body.layout-mobile .sortbar .dir{font-size:15px;padding:10px 12px}
   body.layout-mobile .cards{gap:12px}
-  body.layout-mobile .card{padding:16px 18px}
-  body.layout-mobile .card h3{font-size:18px;margin-bottom:14px}
-  body.layout-mobile .card .row{grid-template-columns:1fr auto;gap:14px;padding:12px 0}
-  body.layout-mobile .card .row .k{font-size:14.5px;line-height:1.35}
-  body.layout-mobile .card .row .v{font-size:16px}
+  body.layout-mobile .card{padding:18px 18px}
+  body.layout-mobile .card h3{font-size:18px;margin-bottom:4px}
+  body.layout-mobile .card .value{font-size:32px}
 
   /* MODE TABLETTE */
   body.layout-tablet .cards{grid-template-columns:repeat(2,1fr)}
@@ -133,16 +98,14 @@
   body.layout-tablet .header h1{font-size:24px}
   body.layout-tablet .header .subtitle{font-size:15px}
   body.layout-tablet .card h3{font-size:17px}
-  body.layout-tablet .card .row{font-size:15px}
+  body.layout-tablet .card .value{font-size:30px}
 
   /* MODE DESKTOP */
   body.layout-desktop .wrap{padding:20px}
+  body.layout-desktop .cards{grid-template-columns:repeat(auto-fill, minmax(220px,1fr))}
   body.layout-desktop .header{padding:28px 24px 24px}
   body.layout-desktop .header h1{font-size:24px}
   body.layout-desktop .header .subtitle{font-size:15px}
-  body.layout-desktop .cards{display:none}
-  body.layout-desktop .table-wrap{display:block}
-  body.layout-desktop .sortbar{display:none}
 </style>
 </head>
 <body>
@@ -175,7 +138,7 @@
       src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg"
       alt="Lycée Maritime Boulogne">
     <h1>Lycée Professionnel Maritime Boulogne - Le Portel</h1>
-    <p class="subtitle">Formations FC — Évaluation à chaud des formations</p>
+    <p class="subtitle">Formations FC — Taux de satisfaction par formation</p>
   </header>
 
   <div class="loading" id="loading">
@@ -183,18 +146,7 @@
     <div>Chargement des données…</div>
   </div>
 
-  <div class="sortbar" id="sortbar" style="display:none">
-    <label for="sortSelect">Trier par :</label>
-    <select id="sortSelect"></select>
-    <button class="dir" id="sortDir" type="button">▲ Croissant</button>
-  </div>
-
   <div class="cards" id="cards" style="display:none"></div>
-
-  <div class="table-wrap" id="tableWrap" style="display:none">
-    <table id="table"></table>
-  </div>
-
   <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
 </div>
 
@@ -204,24 +156,15 @@
      ============================================================ */
   const API_URL = "https://script.google.com/macros/s/AKfycbziTiSbC36BjmwUSjJky6VJg91Amn1xCYc8fScu64qjbTHvVIDkfrc-G9O2NOCp_FrIhQ/exec";
 
-  const CACHE_KEY = 'formations-cache-v2';
+  const CACHE_KEY = 'formations-cache-v3';
   const CACHE_MAX_AGE_MS = 5 * 60 * 1000; // 5 minutes
 
   /* ============================================================
      DOM
      ============================================================ */
-  const $loading   = document.getElementById('loading');
-  const $cards     = document.getElementById('cards');
-  const $table     = document.getElementById('table');
-  const $tableWrap = document.getElementById('tableWrap');
-  const $empty     = document.getElementById('empty');
-  const $sortbar   = document.getElementById('sortbar');
-  const $select    = document.getElementById('sortSelect');
-  const $dirBtn    = document.getElementById('sortDir');
-
-  let DATA = { indicators: [], rows: [] };
-  let sortKey = 'name';
-  let sortAsc = true;
+  const $loading = document.getElementById('loading');
+  const $cards   = document.getElementById('cards');
+  const $empty   = document.getElementById('empty');
 
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
@@ -248,121 +191,37 @@
   }
 
   /* ============================================================
-     TRI
-     ============================================================ */
-  function getValue(row, key){
-    if (key === 'name') return row.name.toLowerCase();
-    const i = parseInt(key.replace('col',''), 10);
-    const c = row.cells[i];
-    if (c.empty) return null;
-    return c.num !== null ? c.num : c.value.toLowerCase();
-  }
-  function sortRows(rows){
-    return rows.slice().sort((a, b) => {
-      const va = getValue(a, sortKey), vb = getValue(b, sortKey);
-      if (va === null && vb === null) return 0;
-      if (va === null) return 1;
-      if (vb === null) return -1;
-      if (typeof va === 'number' && typeof vb === 'number'){
-        return sortAsc ? va - vb : vb - va;
-      }
-      const sa = String(va), sb = String(vb);
-      return sortAsc ? sa.localeCompare(sb,'fr') : sb.localeCompare(sa,'fr');
-    });
-  }
-
-  /* ============================================================
      RENDU
      ============================================================ */
-  function render(){
-    if (!DATA.rows.length){
-      $loading.style.display='none';
-      $empty.style.display='block';
-      return;
-    }
-    const rows = sortRows(DATA.rows);
-
-    /* ---- Tableau desktop ---- */
-    const thead = '<thead><tr>' +
-      '<th data-key="name" class="'+(sortKey==='name'?'sorted':'')+'">Formation' +
-      '<span class="arrow">'+(sortKey==='name'?(sortAsc?'▲':'▼'):'▲')+'</span></th>' +
-      DATA.indicators.map((h, i) => {
-        const k = 'col'+i;
-        const cls = sortKey===k ? 'sorted' : '';
-        const arr = sortKey===k ? (sortAsc?'▲':'▼') : '▲';
-        return '<th data-key="'+k+'" class="'+cls+'">'+esc(h)+
-               '<span class="arrow">'+arr+'</span></th>';
-      }).join('') + '</tr></thead>';
-
-    const tbody = '<tbody>' + rows.map(r =>
-      '<tr><td>'+esc(r.name)+'</td>' +
-      r.cells.map(c => '<td class="'+(c.empty?'empty':'')+'">'+esc(c.value)+'</td>').join('') +
-      '</tr>'
-    ).join('') + '</tbody>';
-
-    $table.innerHTML = thead + tbody;
-
-    /* ---- Cartes mobile ---- */
-    $cards.innerHTML = rows.map(r => {
-      const items = DATA.indicators.map((label, i) => {
-        const c = r.cells[i];
-        return '<div class="row"><span class="k">'+esc(label)+'</span>' +
-               '<span class="v'+(c.empty?' empty':'')+'">'+esc(c.value)+'</span></div>';
-      }).join('');
-      return '<div class="card"><h3>'+esc(r.name)+'</h3>'+items+'</div>';
-    }).join('');
-
-    /* ---- Événements tri (desktop) ---- */
-    $table.querySelectorAll('thead th').forEach(th => {
-      th.addEventListener('click', () => {
-        const k = th.dataset.key;
-        if (k === sortKey) sortAsc = !sortAsc;
-        else { sortKey = k; sortAsc = true; }
-        render();
-      });
-    });
-
-    /* ---- Affichage ---- */
-    $loading.style.display='none';
-    $cards.style.display='grid';
-    $tableWrap.style.display='block';
-    $sortbar.style.display='flex';
-    $empty.style.display='none';
-
-    if ($dirBtn) $dirBtn.textContent = sortAsc ? '▲ Croissant' : '▼ Décroissant';
+  function level(n){
+    if (n === null || n === undefined) return 'unknown';
+    if (n >= 75) return 'high';
+    if (n >= 50) return 'mid';
+    return 'low';
   }
 
-  /* ============================================================
-     MENU DE TRI (mobile + tablette)
-     ============================================================ */
-  function initSortBar(){
-    if (!$select) return;
-    $select.innerHTML = '';
-    const cols = [{ key: 'name', label: 'Formation' },
-      ...DATA.indicators.map((h, i) => ({ key: 'col'+i, label: h }))];
-    cols.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.key;
-      opt.textContent = c.label;
-      $select.appendChild(opt);
-    });
-    $select.value = sortKey;
+  function render(rows){
+    if (!Array.isArray(rows) || !rows.length){
+      $loading.style.display = 'none';
+      $empty.style.display = 'block';
+      return;
+    }
+    $cards.innerHTML = rows.map(d => {
+      const lvl = level(d.numeric);
+      const pct = d.numeric !== null && d.numeric !== undefined
+        ? Math.max(0, Math.min(100, d.numeric)) : 0;
+      const bar = (d.numeric !== null && d.numeric !== undefined)
+        ? '<div class="bar"><span style="width:'+pct+'%"></span></div>' : '';
+      return '<div class="card '+lvl+'">' +
+               '<h3>'+esc(d.name || d.code || '')+'</h3>' +
+               '<div class="value">'+esc(d.value || '—')+'</div>' +
+               bar +
+             '</div>';
+    }).join('');
 
-    if (!$select.dataset.bound){
-      $select.addEventListener('change', () => {
-        sortKey = $select.value;
-        sortAsc = true;
-        render();
-      });
-      $select.dataset.bound = '1';
-    }
-    if ($dirBtn && !$dirBtn.dataset.bound){
-      $dirBtn.addEventListener('click', () => {
-        sortAsc = !sortAsc;
-        render();
-      });
-      $dirBtn.dataset.bound = '1';
-    }
+    $loading.style.display = 'none';
+    $cards.style.display = 'grid';
+    $empty.style.display = 'none';
   }
 
   /* ============================================================
@@ -371,10 +230,8 @@
   async function chargerDonnees(){
     /* 1) Affichage immédiat si cache récent */
     const cached = lireCache();
-    if (cached && cached.rows && cached.rows.length){
-      DATA = cached;
-      initSortBar();
-      render();
+    if (cached && Array.isArray(cached) && cached.length){
+      render(cached);
     }
 
     /* 2) Rafraîchissement via l'API */
@@ -383,7 +240,7 @@
       if (!response.ok) throw new Error('Erreur réseau');
       const data = await response.json();
 
-      if (!data || data.error || !Array.isArray(data.indicators) || !Array.isArray(data.rows)){
+      if (!Array.isArray(data)){
         console.error("Réponse API invalide:", data);
         if (!cached){
           $loading.style.display = 'none';
@@ -393,10 +250,8 @@
         return;
       }
 
-      DATA = data;
       ecrireCache(data);
-      initSortBar();
-      render();
+      render(data);
 
     } catch (error) {
       console.error("Erreur de chargement:", error);
