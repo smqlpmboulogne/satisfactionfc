@@ -30,6 +30,27 @@
   .header h1{margin:0;font-size:18px;font-weight:700;line-height:1.3}
   .header .subtitle{margin:6px 0 0;font-size:13px;color:#667085;font-weight:500}
 
+  /* Bandeau d'aide Chrome/Android */
+  #chrome-help{
+    display:none;
+    background:#fff8e1;border:1px solid #f4b400;
+    border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;
+    color:#5c4813;font-size:13.5px;line-height:1.5;
+  }
+  #chrome-help h3{margin:0 0 8px;font-size:15px;color:#92400e}
+  #chrome-help p{margin:0 0 8px}
+  #chrome-help .btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  #chrome-help button,
+  #chrome-help a{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 12px;border-radius:8px;border:1px solid #d4a006;
+    background:#fff;color:#5c4813;font-size:13px;font-weight:600;
+    cursor:pointer;text-decoration:none;transition:background .15s;
+  }
+  #chrome-help button:hover,
+  #chrome-help a:hover{background:#fff3c4}
+  #chrome-help .copied{color:var(--success);font-size:12px;margin-left:4px}
+
   .tabs{
     display:flex;gap:4px;margin-bottom:16px;
     background:var(--card);border:1px solid var(--border);
@@ -62,7 +83,6 @@
     background:var(--card);font-size:13px;cursor:pointer;white-space:nowrap;
   }
 
-  /* Les deux vues sont visibles par défaut, les classes layout-* décident */
   .cards, .table-wrap { display:block; }
   .cards-grid{display:grid;grid-template-columns:1fr;gap:12px}
 
@@ -135,9 +155,7 @@
 
   .empty-msg{text-align:center;padding:30px;color:var(--muted);font-size:14px}
 
-  /* ============================================================
-     MODE MOBILE : cartes seulement
-     ============================================================ */
+  /* MODE MOBILE */
   body.layout-mobile .wrap{padding:14px}
   body.layout-mobile .header{padding:18px 16px;margin-bottom:16px}
   body.layout-mobile .header h1{font-size:22px}
@@ -146,7 +164,6 @@
   body.layout-mobile .sortbar label{font-size:15px}
   body.layout-mobile .sortbar select{font-size:16px;padding:10px 12px}
   body.layout-mobile .sortbar .dir{font-size:15px;padding:10px 12px}
-
   body.layout-mobile .cards{display:block}
   body.layout-mobile .table-wrap{display:none}
   body.layout-mobile .card{padding:16px 18px}
@@ -155,9 +172,7 @@
   body.layout-mobile .card .row .k{font-size:14.5px;line-height:1.35}
   body.layout-mobile .card .row .v{font-size:16px}
 
-  /* ============================================================
-     MODE TABLETTE : cartes, 2 colonnes
-     ============================================================ */
+  /* MODE TABLETTE */
   body.layout-tablet .wrap{padding:16px}
   body.layout-tablet .header{padding:22px 18px}
   body.layout-tablet .header h1{font-size:24px}
@@ -167,20 +182,14 @@
   body.layout-tablet .cards-grid{grid-template-columns:repeat(2,1fr);gap:14px}
   body.layout-tablet .card .value{font-size:30px}
 
-  /* ============================================================
-     MODE DESKTOP : tableau pour l'onglet 2, cartes pour l'onglet 1
-     ============================================================ */
+  /* MODE DESKTOP */
   body.layout-desktop .wrap{padding:20px}
   body.layout-desktop .header{padding:28px 24px}
   body.layout-desktop .header h1{font-size:24px}
   body.layout-desktop .header .subtitle{font-size:15px}
   body.layout-desktop .sortbar{display:none}
-
-  /* Onglet 1 (satisfaction) : cartes en grille */
   body.layout-desktop #panel-sat .cards{display:block}
   body.layout-desktop #panel-sat .cards-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-
-  /* Onglet 2 (complet) : cartes cachées, tableau visible */
   body.layout-desktop #panel-full .cards{display:none}
   body.layout-desktop #panel-full .table-wrap{display:block}
 </style>
@@ -195,6 +204,23 @@
     <h1>Lycée Professionnel Maritime Boulogne - Le Portel</h1>
     <p class="subtitle">Formations FC — Évaluation à chaud des formations</p>
   </header>
+
+  <!-- Bandeau d'aide (affiché uniquement sur Chrome/Android) -->
+  <div id="chrome-help">
+    <h3>💡 Affichage incomplet sur Chrome mobile ?</h3>
+    <p>
+      Si vous êtes connecté à plusieurs comptes Google dans Chrome, la page peut
+      s'afficher partiellement. Voici comment la voir normalement :
+    </p>
+    <div class="btn-row">
+      <button type="button" id="btn-copy-url">📋 Copier le lien</button>
+      <a id="btn-open-private" href="#" target="_blank" rel="noopener">🕶️ Ouvrir en privé</a>
+      <a href="https://www.mozilla.org/firefox/browsers/mobile/android/" target="_blank" rel="noopener">🌐 Installer Firefox</a>
+    </div>
+    <p style="margin-top:10px;font-size:12px;color:#92400e">
+      Collez le lien dans un onglet en navigation privée (⋮ → Nouvelle fenêtre Incognito).
+    </p>
+  </div>
 
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="sat" role="tab">Taux de satisfaction</button>
@@ -232,14 +258,31 @@
 
 <script>
   /* ============================================================
-     1) LAYOUT
+     1) LAYOUT — re-render automatique au changement
      ============================================================ */
   function applyLayout(){
-    var w = Math.min(window.innerWidth||9999, document.documentElement.clientWidth||9999, screen.width||9999);
+    var w = Math.min(
+      window.innerWidth || 9999,
+      document.documentElement.clientWidth || 9999,
+      screen.width || 9999
+    );
+    var prev = document.body.classList.contains('layout-mobile') ? 'mobile'
+             : document.body.classList.contains('layout-tablet') ? 'tablet'
+             : document.body.classList.contains('layout-desktop') ? 'desktop' : '';
+
     document.body.classList.remove('layout-mobile','layout-tablet','layout-desktop');
-    if (w < 700)       document.body.classList.add('layout-mobile');
-    else if (w < 1000) document.body.classList.add('layout-tablet');
-    else               document.body.classList.add('layout-desktop');
+    var next = w < 700 ? 'mobile' : w < 1000 ? 'tablet' : 'desktop';
+    document.body.classList.add('layout-' + next);
+
+    // Si le layout a changé et que des données sont là, on re-render
+    if (prev && prev !== next){
+      if (window.DATA2 && DATA2.rows && DATA2.rows.length){
+        renderComplet();
+      }
+      if (window.DATA_SAT && DATA_SAT.length){
+        renderSatisfaction(DATA_SAT);
+      }
+    }
   }
   applyLayout();
   window.addEventListener('resize', applyLayout);
@@ -276,13 +319,49 @@
   }
 
   /* ============================================================
-     4) ONGLETS
+     4) BANDEAU D'INFO CHROME / ANDROID
+     ============================================================ */
+  (function(){
+    const ua = navigator.userAgent || '';
+    const isAndroid = /Android/i.test(ua);
+    const isChrome  = /Chrome\//.test(ua) && !/Edg|OPR|Brave|SamsungBrowser/.test(ua);
+    if (isAndroid && isChrome){
+      const el = document.getElementById('chrome-help');
+      if (el) el.style.display = 'block';
+
+      // Bouton "Copier le lien"
+      const btnCopy = document.getElementById('btn-copy-url');
+      if (btnCopy){
+        btnCopy.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(location.href);
+            btnCopy.textContent = '✅ Lien copié';
+            setTimeout(() => btnCopy.textContent = '📋 Copier le lien', 2500);
+          } catch(e){
+            // Fallback : on ouvre un prompt
+            window.prompt("Copiez ce lien :", location.href);
+          }
+        });
+      }
+
+      // Lien "Ouvrir en privé" : on tente un schéma qui marche sur certains navigateurs
+      const btnPriv = document.getElementById('btn-open-private');
+      if (btnPriv){
+        btnPriv.href = location.href;
+        btnPriv.addEventListener('click', () => {
+          // On ne peut pas forcer l'incognito. On laisse le comportement par défaut (nouvel onglet).
+        });
+      }
+    }
+  })();
+
+  /* ============================================================
+     5) ONGLETS
      ============================================================ */
   document.querySelectorAll('.tab').forEach(t => {
     t.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
       document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + t.dataset.tab));
-      // Forcer l'affichage du conteneur correspondant au layout actuel
       setTimeout(() => {
         const isDesk = document.body.classList.contains('layout-desktop');
         const $tw = document.getElementById('tableWrap2');
@@ -294,8 +373,9 @@
   });
 
   /* ============================================================
-     5) SATISFACTION
+     6) SATISFACTION
      ============================================================ */
+  let DATA_SAT = [];
   function level(n){
     if (n == null) return 'unknown';
     if (n >= 75) return 'high';
@@ -304,6 +384,7 @@
   }
 
   function renderSatisfaction(rows){
+    DATA_SAT = rows || [];
     const $loading = document.getElementById('loading1');
     const $cards   = document.getElementById('cards1');
     const $grid    = document.getElementById('grid1');
@@ -330,9 +411,10 @@
   }
 
   /* ============================================================
-     6) DÉTAIL COMPLET
+     7) DÉTAIL COMPLET
      ============================================================ */
   let DATA2 = { indicators: [], rows: [] };
+  window.DATA2 = DATA2;
   let sortKey2 = 'name';
   let sortAsc2 = true;
 
@@ -409,7 +491,6 @@
       });
     });
 
-    // Affichage final : on décide selon le layout actuel
     const isDesk = document.body.classList.contains('layout-desktop');
     $loading.style.display = 'none';
     $empty.style.display = 'none';
@@ -451,7 +532,7 @@
   }
 
   /* ============================================================
-     7) RENDU GLOBAL
+     8) RENDU GLOBAL
      ============================================================ */
   function renderAll(payload){
     if (!payload){
@@ -464,6 +545,7 @@
     renderSatisfaction(payload.satisfaction || []);
     if (payload.complet && payload.complet.rows){
       DATA2 = payload.complet;
+      window.DATA2 = DATA2;
       initSortBar2();
       renderComplet();
     } else {
@@ -473,7 +555,7 @@
   }
 
   /* ============================================================
-     8) CHARGEMENT VIA JSONP
+     9) CHARGEMENT VIA JSONP
      ============================================================ */
   let jsonpCounter = 0;
 
