@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lycée Professionnel Maritime Boulogne - Le Portel</title>
+<style>
+  /* Vos styles CSS restent identiques, ils sont très bien */
+  :root{
+    --accent:#1a73e8; --bg:#f6f8fb; --card:#ffffff; --text:#1f2430;
+    --muted:#98a2b3; --border:#e6e9ef; --radius:14px;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(16,24,40,.07);
+    --success:#0f9d58; --warning:#f4b400; --danger:#d93025;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1200px;margin:0 auto;padding:16px}
+  .header{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:24px 20px 20px; margin-bottom:20px; text-align:center; }
+  .header .banner{ display:block; margin:0 auto 18px; max-width:600px; width:100%; height:auto; }
+  .header h1{ margin:0; font-size:24px; font-weight:700; color:#1f2430; line-height:1.25; }
+  .header .subtitle{ margin:6px 0 0; font-size:15px; color:#667085; font-weight:500; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px; }
+  .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:18px 16px; display:flex; flex-direction:column;
+    align-items:center; text-align:center; transition:transform .15s, box-shadow .15s; }
+  .card:hover{ transform:translateY(-3px); box-shadow:0 6px 16px rgba(16,24,40,.10); }
+  .card .name{ font-size:13.5px; font-weight:600; color:#344054; margin-bottom:12px;
+    word-break:break-word; line-height:1.35; min-height:2.7em; display:flex;
+    align-items:center; justify-content:center; }
+  .card .score{ font-size:28px; font-weight:700; color:var(--accent);
+    font-variant-numeric:tabular-nums; line-height:1.1; letter-spacing:-0.5px; }
+  .bar{ width:100%; height:6px; background:#eef1f6; border-radius:3px; margin-top:12px; overflow:hidden; }
+  .bar span{ display:block; height:100%; background:var(--accent); border-radius:3px; transition:width .4s ease; }
+  .card.high .score{color:var(--success)} .card.high .bar span{background:var(--success)}
+  .card.mid .score{color:var(--warning)} .card.mid .bar span{background:var(--warning)}
+  .card.low .score{color:var(--danger)} .card.low .bar span{background:var(--danger)}
+  .empty-msg{text-align:center;padding:40px;color:var(--muted)}
+  @media (max-width:600px){ .header{padding:18px 14px 16px} .header h1{font-size:19px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="header">
+    <img class="banner" src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg" alt="Lycée Maritime Boulogne">
+    <h1>Lycée Professionnel Maritime Boulogne - Le Portel</h1>
+    <p class="subtitle">Formations FC — Taux de satisfaction par formation</p>
+  </header>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
+</div>
+
+<script>
+  // REMPLACEZ CETTE URL PAR CELLE COPIÉE À L'ÉTAPE 1
+  const API_URL = "https://script.google.com/macros/s/AKfycbziTiSbC36BjmwUSjJky6VJg91Amn1xCYc8fScu64qjbTHvVIDkfrc-G9O2NOCp_FrIhQ/exec";
+
+  const $grid = document.getElementById('grid');
+  const $empty = document.getElementById('empty');
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function level(n){
+    if (n === null) return ''; if (n >= 75) return 'high'; if (n >= 50) return 'mid'; return 'low';
+  }
+
+  // C'est ici que la magie opère : on va chercher les données.
+  async function chargerDonnees() {
+    try {
+      // 1. On appelle l'API (le "cerveau")
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error('Erreur réseau');
+      
+      // 2. On récupère les données au format JSON
+      const data = await response.json();
+
+      if (data.error) {
+        console.error("Erreur API:", data.error);
+        $empty.textContent = "Erreur de chargement des données.";
+        $empty.style.display = 'block';
+        return;
+      }
+
+      // 3. On affiche les cartes (le code est le même que le vôtre)
+      if (!data.length){ $empty.style.display='block'; return; }
+
+      $grid.innerHTML = data.map(d => {
+        const lvl = level(d.numeric);
+        const pct = d.numeric !== null ? Math.max(0, Math.min(100, d.numeric)) : 0;
+        const bar = d.numeric !== null ? '<div class="bar"><span style="width:'+pct+'%"></span></div>' : '';
+        return '<div class="card '+lvl+'">' +
+                 '<div class="name">'+esc(d.name)+'</div>' +
+                 '<div class="score">'+esc(d.value)+'</div>' +
+                 bar +
+               '</div>';
+      }).join('');
+
+    } catch (error) {
+      console.error("Erreur de chargement:", error);
+      $empty.textContent = "Impossible de charger les données.";
+      $empty.style.display = 'block';
+    }
+  }
+
+  // On lance le chargement au démarrage de la page
+  chargerDonnees();
+</script>
+</body>
+</html>
