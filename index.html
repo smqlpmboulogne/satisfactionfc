@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lycée Professionnel Maritime Boulogne - Le Portel</title>
+<link rel="icon" href="data:,">
 <style>
   :root{
     --accent:#1a73e8;--accent-soft:#e8f0fe;--bg:#f6f8fb;--card:#ffffff;
@@ -61,7 +62,8 @@
     background:var(--card);font-size:13px;cursor:pointer;white-space:nowrap;
   }
 
-  .cards, .table-wrap { display:none; }
+  /* Les deux vues sont visibles par défaut, les classes layout-* décident */
+  .cards, .table-wrap { display:block; }
   .cards-grid{display:grid;grid-template-columns:1fr;gap:12px}
 
   .card{
@@ -133,6 +135,9 @@
 
   .empty-msg{text-align:center;padding:30px;color:var(--muted);font-size:14px}
 
+  /* ============================================================
+     MODE MOBILE : cartes seulement
+     ============================================================ */
   body.layout-mobile .wrap{padding:14px}
   body.layout-mobile .header{padding:18px 16px;margin-bottom:16px}
   body.layout-mobile .header h1{font-size:22px}
@@ -141,8 +146,8 @@
   body.layout-mobile .sortbar label{font-size:15px}
   body.layout-mobile .sortbar select{font-size:16px;padding:10px 12px}
   body.layout-mobile .sortbar .dir{font-size:15px;padding:10px 12px}
-  body.layout-mobile .cards{display:grid}
-  body.layout-mobile .cards-grid{grid-template-columns:1fr}
+
+  body.layout-mobile .cards{display:block}
   body.layout-mobile .table-wrap{display:none}
   body.layout-mobile .card{padding:16px 18px}
   body.layout-mobile .card .value{font-size:32px}
@@ -150,23 +155,34 @@
   body.layout-mobile .card .row .k{font-size:14.5px;line-height:1.35}
   body.layout-mobile .card .row .v{font-size:16px}
 
+  /* ============================================================
+     MODE TABLETTE : cartes, 2 colonnes
+     ============================================================ */
   body.layout-tablet .wrap{padding:16px}
   body.layout-tablet .header{padding:22px 18px}
   body.layout-tablet .header h1{font-size:24px}
   body.layout-tablet .header .subtitle{font-size:15px}
-  body.layout-tablet .cards{display:grid}
-  body.layout-tablet .cards-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  body.layout-tablet .cards{display:block}
   body.layout-tablet .table-wrap{display:none}
+  body.layout-tablet .cards-grid{grid-template-columns:repeat(2,1fr);gap:14px}
   body.layout-tablet .card .value{font-size:30px}
 
+  /* ============================================================
+     MODE DESKTOP : tableau pour l'onglet 2, cartes pour l'onglet 1
+     ============================================================ */
   body.layout-desktop .wrap{padding:20px}
   body.layout-desktop .header{padding:28px 24px}
   body.layout-desktop .header h1{font-size:24px}
   body.layout-desktop .header .subtitle{font-size:15px}
   body.layout-desktop .sortbar{display:none}
-  body.layout-desktop .cards{display:grid}
-  body.layout-desktop .cards-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-  body.layout-desktop .table-wrap{display:block}
+
+  /* Onglet 1 (satisfaction) : cartes en grille */
+  body.layout-desktop #panel-sat .cards{display:block}
+  body.layout-desktop #panel-sat .cards-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+
+  /* Onglet 2 (complet) : cartes cachées, tableau visible */
+  body.layout-desktop #panel-full .cards{display:none}
+  body.layout-desktop #panel-full .table-wrap{display:block}
 </style>
 </head>
 <body>
@@ -197,7 +213,7 @@
   </div>
 
   <div class="panel" id="panel-full">
-    <div class="sortbar" id="sortbar2">
+    <div class="sortbar" id="sortbar2" style="display:none">
       <label for="sortSelect2">Trier par :</label>
       <select id="sortSelect2"></select>
       <button class="dir" id="sortDir2" type="button">▲ Croissant</button>
@@ -218,20 +234,18 @@
   /* ============================================================
      1) LAYOUT
      ============================================================ */
-  (function(){
-    function applyLayout(){
-      var w = Math.min(window.innerWidth||9999, document.documentElement.clientWidth||9999, screen.width||9999);
-      document.body.classList.remove('layout-mobile','layout-tablet','layout-desktop');
-      if (w < 700)       document.body.classList.add('layout-mobile');
-      else if (w < 1000) document.body.classList.add('layout-tablet');
-      else               document.body.classList.add('layout-desktop');
-    }
-    applyLayout();
-    window.addEventListener('resize', applyLayout);
-    window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
-    setTimeout(applyLayout, 300);
-    setTimeout(applyLayout, 1000);
-  })();
+  function applyLayout(){
+    var w = Math.min(window.innerWidth||9999, document.documentElement.clientWidth||9999, screen.width||9999);
+    document.body.classList.remove('layout-mobile','layout-tablet','layout-desktop');
+    if (w < 700)       document.body.classList.add('layout-mobile');
+    else if (w < 1000) document.body.classList.add('layout-tablet');
+    else               document.body.classList.add('layout-desktop');
+  }
+  applyLayout();
+  window.addEventListener('resize', applyLayout);
+  window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
+  setTimeout(applyLayout, 300);
+  setTimeout(applyLayout, 1000);
 
   /* ============================================================
      2) CONFIGURATION
@@ -268,6 +282,14 @@
     t.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
       document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + t.dataset.tab));
+      // Forcer l'affichage du conteneur correspondant au layout actuel
+      setTimeout(() => {
+        const isDesk = document.body.classList.contains('layout-desktop');
+        const $tw = document.getElementById('tableWrap2');
+        const $c  = document.getElementById('cards2');
+        if ($tw) $tw.style.display = isDesk ? 'block' : 'none';
+        if ($c)  $c.style.display  = isDesk ? 'none'  : 'grid';
+      }, 50);
     });
   });
 
@@ -303,7 +325,7 @@
              '</div>';
     }).join('');
     $loading.style.display = 'none';
-    $cards.style.display = 'grid';
+    $cards.style.display = 'block';
     $empty.style.display = 'none';
   }
 
@@ -387,9 +409,13 @@
       });
     });
 
+    // Affichage final : on décide selon le layout actuel
+    const isDesk = document.body.classList.contains('layout-desktop');
     $loading.style.display = 'none';
     $empty.style.display = 'none';
-    $sortbar.style.display = 'flex';
+    $sortbar.style.display = isDesk ? 'none' : 'flex';
+    $tableWrap.style.display = isDesk ? 'block' : 'none';
+    $cards.style.display    = isDesk ? 'none'  : 'grid';
   }
 
   function initSortBar2(){
@@ -422,7 +448,6 @@
       });
       $dirBtn.dataset.bound = '1';
     }
-    if ($dirBtn) $dirBtn.textContent = sortAsc2 ? '▲ Croissant' : '▼ Décroissant';
   }
 
   /* ============================================================
@@ -434,8 +459,6 @@
       document.getElementById('loading2').style.display = 'none';
       document.getElementById('empty1').style.display = 'block';
       document.getElementById('empty2').style.display = 'block';
-      document.getElementById('empty1').textContent = "Aucune donnée";
-      document.getElementById('empty2').textContent = "Aucune donnée";
       return;
     }
     renderSatisfaction(payload.satisfaction || []);
