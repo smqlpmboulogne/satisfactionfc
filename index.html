@@ -1,112 +1,931 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lycée Professionnel Maritime Boulogne - Le Portel</title>
-<style>
-  /* Vos styles CSS restent identiques, ils sont très bien */
-  :root{
-    --accent:#1a73e8; --bg:#f6f8fb; --card:#ffffff; --text:#1f2430;
-    --muted:#98a2b3; --border:#e6e9ef; --radius:14px;
-    --shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(16,24,40,.07);
-    --success:#0f9d58; --warning:#f4b400; --danger:#d93025;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased}
-  .wrap{max-width:1200px;margin:0 auto;padding:16px}
-  .header{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-    box-shadow:var(--shadow); padding:24px 20px 20px; margin-bottom:20px; text-align:center; }
-  .header .banner{ display:block; margin:0 auto 18px; max-width:600px; width:100%; height:auto; }
-  .header h1{ margin:0; font-size:24px; font-weight:700; color:#1f2430; line-height:1.25; }
-  .header .subtitle{ margin:6px 0 0; font-size:15px; color:#667085; font-weight:500; }
-  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px; }
-  .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-    box-shadow:var(--shadow); padding:18px 16px; display:flex; flex-direction:column;
-    align-items:center; text-align:center; transition:transform .15s, box-shadow .15s; }
-  .card:hover{ transform:translateY(-3px); box-shadow:0 6px 16px rgba(16,24,40,.10); }
-  .card .name{ font-size:13.5px; font-weight:600; color:#344054; margin-bottom:12px;
-    word-break:break-word; line-height:1.35; min-height:2.7em; display:flex;
-    align-items:center; justify-content:center; }
-  .card .score{ font-size:28px; font-weight:700; color:var(--accent);
-    font-variant-numeric:tabular-nums; line-height:1.1; letter-spacing:-0.5px; }
-  .bar{ width:100%; height:6px; background:#eef1f6; border-radius:3px; margin-top:12px; overflow:hidden; }
-  .bar span{ display:block; height:100%; background:var(--accent); border-radius:3px; transition:width .4s ease; }
-  .card.high .score{color:var(--success)} .card.high .bar span{background:var(--success)}
-  .card.mid .score{color:var(--warning)} .card.mid .bar span{background:var(--warning)}
-  .card.low .score{color:var(--danger)} .card.low .bar span{background:var(--danger)}
-  .empty-msg{text-align:center;padding:40px;color:var(--muted)}
-  @media (max-width:600px){ .header{padding:18px 14px 16px} .header h1{font-size:19px} }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordonnées cartésiennes et polaires</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #0d47a1;
+            --accent: #0277bd;
+            --light-blue: #e3f2fd;
+            --dark-blue: #0a2463;
+            --text: #2c3e50;
+            --light-gray: #f8f9fa;
+            --border: #b0bec5;
+            --success: #2e7d32;
+            --grid-color: #e0e0e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Latin Modern Roman', 'TeX Gyre Termes', 'STIX Two Text', Georgia, serif;
+            background-color: var(--light-blue);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Loader global */
+        #page-loader {
+            position: fixed; inset: 0; background: var(--light-blue);
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 16px; z-index: 9999;
+            font-family: Georgia, serif; color: var(--primary);
+            transition: opacity .4s ease;
+        }
+        #page-loader.hidden { opacity: 0; pointer-events: none; }
+        #page-loader .spin {
+            width: 38px; height: 38px; border: 3px solid var(--border);
+            border-top-color: var(--accent); border-radius: 50%;
+            animation: spin .9s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-style: italic;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 992px) {
+            .container { flex-direction: row; }
+        }
+        
+        .content-section { flex: 1; min-width: 0; }
+        .visualization-section { flex: 1; min-width: 0; }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        
+        .section-title .icon {
+            margin-right: 10px;
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+        
+        .theorem {
+            background: var(--light-gray);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            position: relative;
+        }
+        
+        .theorem::before {
+            content: '📘';
+            position: absolute;
+            left: -15px;
+            top: -15px;
+            background: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent);
+        }
+        
+        .theorem-title {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .formula {
+            font-family: 'Latin Modern Math', 'STIX Two Math', Cambria, serif;
+            background: #f5f7ff;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border-left: 3px solid var(--success);
+            overflow-x: auto;
+        }
+        
+        .formula .math { font-size: 1.1rem; }
+        
+        .visualization-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .visualization-title {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-blue);
+        }
+        
+        #svg-container {
+            width: 100%;
+            height: 450px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            background: #fafcff;
+        }
+        
+        .coordinate-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #e3f2fd, #f0f7ff);
+            border-radius: 6px;
+        }
+        
+        .coord-group { text-align: center; }
+        
+        .coord-label {
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .coord-value {
+            font-size: 1.2rem;
+            font-family: 'Latin Modern Math', monospace;
+            color: var(--dark-blue);
+            font-weight: 700;
+        }
+        
+        .instructions {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: var(--light-blue);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--dark-blue);
+        }
+        
+        .instructions i { color: var(--accent); }
+        
+        .calculator-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-radius: 8px;
+            border: 2px solid #4caf50;
+        }
+        
+        .calculator-title {
+            color: #2e7d32;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .calculator-steps {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border-left: 3px solid #4caf50;
+        }
+        
+        .calculator-steps ol { margin-left: 1.5rem; }
+        .calculator-steps li { margin-bottom: 0.8rem; line-height: 1.8; }
+        
+        .key {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            margin: 0 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .key-sequence {
+            background: #f0f7ff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 5px 0;
+            border-left: 3px solid #0277bd;
+            font-family: monospace;
+        }
+        
+        .video-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #fff3e0, #ffecb3);
+            border-radius: 8px;
+            border: 2px solid #ff9800;
+            text-align: center;
+        }
+        
+        .video-title {
+            color: #ef6c00;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: #ff9800;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .video-link:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .note {
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 3px solid #ffb300;
+            font-size: 0.9em;
+        }
+        
+        .angle-unit-info {
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 3px solid #4caf50;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header h1 { font-size: 2rem; }
+            .card { padding: 1rem; }
+            .section-title { font-size: 1.4rem; }
+            .visualization-container { position: static; }
+            #svg-container { height: 350px; }
+            .coordinate-display { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 480px) {
+            #svg-container { height: 300px; }
+            .header h1 { font-size: 1.8rem; }
+            .coord-value { font-size: 1rem; }
+        }
+        
+        /* Styles pour le SVG */
+        .grid-line { stroke: var(--grid-color); stroke-width: 0.5; }
+        .axis { stroke: var(--dark-blue); stroke-width: 1.5; }
+        .axis-label { fill: var(--primary); font-size: 16px; font-weight: 600; }
+        .vector { stroke: var(--accent); stroke-width: 1.5; }
+        .vector-label { fill: var(--accent); font-size: 13px; font-weight: 600; font-style: italic; }
+        .point-m {
+            fill: var(--primary);
+            stroke: white;
+            stroke-width: 2;
+            cursor: move;
+            transition: r 0.2s;
+        }
+        .point-m:hover { r: 10; }
+        .projection-line { stroke: var(--secondary); stroke-width: 1; stroke-dasharray: 5,3; }
+        .projection-point { fill: var(--success); }
+        .radius-line { stroke: var(--accent); stroke-width: 2; }
+        .arc { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+        .coord-text { fill: var(--primary); font-size: 13px; font-weight: 600; }
+        .angle-text { fill: var(--accent); font-size: 14px; font-style: italic; font-weight: 700; }
+        .radius-text { fill: var(--accent); font-size: 13px; font-weight: 700; }
+        .repere-label { fill: var(--dark-blue); font-size: 11px; font-weight: 600; font-style: italic; }
+        .origin-label { fill: var(--primary); font-size: 15px; font-weight: 700; }
+        .grid-dense { stroke: rgba(224, 224, 224, 0.3); stroke-width: 0.3; }
+        .grid-main { stroke: rgba(224, 224, 224, 0.8); stroke-width: 0.8; }
+        .thin-arrow { stroke-width: 1; }
+        .vector-om { stroke: var(--accent); stroke-width: 2; marker-end: url(#very-thin-arrow); }
+    </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="header">
-    <img class="banner" src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg" alt="Lycée Maritime Boulogne">
-    <h1>Lycée Professionnel Maritime Boulogne - Le Portel</h1>
-    <p class="subtitle">Formations FC — Taux de satisfaction par formation</p>
-  </header>
+    <!-- Loader affiché immédiatement, retiré quand la page est prête -->
+    <div id="page-loader">
+        <div class="spin"></div>
+        <div>Chargement de la page…</div>
+    </div>
 
-  <div class="grid" id="grid"></div>
-  <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
-</div>
+    <div class="header">
+        <h1>Coordonnées dans le plan</h1>
+        <div class="subtitle">Cartésiennes et polaires - Vecteurs et points</div>
+    </div>
+    
+    <div class="container">
+        <div class="content-section">
+            <div class="card">
+                <div class="section-title">
+                    <span class="icon">📐</span>
+                    Coordonnées cartésiennes
+                </div>
+                <p>
+                    Tout point $M$ du plan est repéré par un unique couple $(x;y)$ de nombres réels tels que 
+                    $\overrightarrow{\mathrm{OM}} = x\,\vec{i} + y\,\vec{j}$.
+                    $(x;y)$ est appelé couple de <strong>coordonnées cartésiennes</strong> du point $M$ dans le repère 
+                    $(\mathrm{O};\vec{i},\vec{j})$.
+                </p>
+                
+                <div class="theorem">
+                    <div class="theorem-title">
+                        <span>📍</span>
+                        Coordonnées d'un vecteur
+                    </div>
+                    <p>
+                        Dans un repère cartésien, un vecteur $\vec{v}$ a pour coordonnées $(x,y)$ si :
+                        $$\vec{v} = x\vec{i} + y\vec{j}$$
+                        Si $A(x_A;y_A)$ et $B(x_B;y_B)$, alors :
+                        $$\overrightarrow{AB} = (x_B - x_A)\vec{i} + (y_B - y_A)\vec{j}$$
+                    </p>
+                </div>
+                
+                <div class="theorem">
+                    <div class="theorem-title">
+                        <span>📏</span>
+                        Distance entre deux points
+                    </div>
+                    <div class="formula">
+                        <div class="math">
+                            Si $A(x_A;y_A)$ et $B(x_B;y_B)$, alors :
+                            $$AB = \sqrt{(x_B - x_A)^2 + (y_B - y_A)^2}$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-title">
+                    <span class="icon">🎯</span>
+                    Coordonnées polaires
+                </div>
+                <p>
+                    Tout point $M$ du plan distinct de $O$ est repéré par un couple $(r;\theta)$ de 
+                    nombres réels avec $r>0$, appelé couple de <strong>coordonnées polaires</strong> du 
+                    point $M$, tel que $r = \mathrm{OM}$ et $\theta = (\vec{i};\overrightarrow{\mathrm{OM}})$.
+                </p>
+                
+                <div class="angle-unit-info">
+                    <strong>Unités d'angle :</strong> L'angle $\theta$ peut être exprimé en degrés ($°$) ou en radians (rad).
+                    $$1 \text{ rad} = \frac{180}{\pi}° \approx 57.3°$$
+                    $$180° = \pi \text{ rad}$$
+                    Sur la figure interactive, $\theta$ est affiché en degrés, mais les formules fonctionnent avec les deux unités.
+                </div>
+                
+                <div class="theorem">
+                    <div class="theorem-title">
+                        <span>🔢</span>
+                        Coordonnées polaires d'un vecteur
+                    </div>
+                    <p>
+                        Un vecteur $\vec{v}$ peut également être représenté en coordonnées polaires $(r,\theta)$ où :
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>$r = \|\vec{v}\|$ est la norme du vecteur</li>
+                            <li>$\theta$ est l'angle que fait le vecteur avec l'axe des abscisses (en degrés ou radians)</li>
+                        </ul>
+                        On a alors : $\vec{v} = (r\cos\theta, r\sin\theta)$ en coordonnées cartésiennes.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-title">
+                    <span class="icon">🔄</span>
+                    Relations de passage
+                </div>
+                <p>
+                    Si un point $M$ distinct de $O$ a pour coordonnées cartésiennes $(x;y)$ et pour 
+                    coordonnées polaires $(r;\theta)$, alors :
+                </p>
+                
+                <div class="formula">
+                    <div class="math">
+                        <strong>Cartésiennes → Polaires</strong><br>
+                        $$r = \sqrt{x^2 + y^2}$$
+                        $$\theta = \arctan\left(\frac{y}{x}\right) \quad (\text{avec ajustement de quadrant})$$
+                    </div>
+                </div>
+                
+                <div class="formula">
+                    <div class="math">
+                        <strong>Polaires → Cartésiennes</strong><br>
+                        $$x = r\cos\theta$$
+                        $$y = r\sin\theta$$
+                        <em>Note : $\theta$ peut être en degrés ou radians selon le contexte.</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="visualization-section">
+            <div class="visualization-container">
+                <div class="visualization-title">Représentation interactive</div>
+                
+                <div id="svg-container"></div>
+                
+                <div class="coordinate-display">
+                    <div class="coord-group">
+                        <div class="coord-label">Point M cartésien</div>
+                        <div class="coord-value" id="cartesian-coords">(0.00, 0.00)</div>
+                    </div>
+                    <div class="coord-group">
+                        <div class="coord-label">Point M polaire</div>
+                        <div class="coord-value" id="polar-coords">(0.00, 0.00°)</div>
+                    </div>
+                    <div class="coord-group">
+                        <div class="coord-label">Vecteur $\vec{OM}$</div>
+                        <div class="coord-value" id="vector-coords">(0.00, 0.00)</div>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <i>💡 Déplacer le point M directement sur le graphique</i>
+                </div>
+                
+                <div class="video-section">
+                    <div class="video-title">🎥 Vidéo explicative</div>
+                    <p>Pour voir la méthode de conversion sur calculatrice Casio fx-92 en vidéo :</p>
+                    <a href="https://www.youtube.com/watch?v=iKV5fWz1w8g" target="_blank" class="video-link">
+                        <span>▶️</span>
+                        Voir la vidéo sur YouTube
+                    </a>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                        Tutoriel Casio fx-92 : Conversion coordonnées polaires/cartésiennes
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script>
-  // REMPLACEZ CETTE URL PAR CELLE COPIÉE À L'ÉTAPE 1
-  const API_URL = "https://script.google.com/macros/s/AKfycbziTiSbC36BjmwUSjJky6VJg91Amn1xCYc8fScu64qjbTHvVIDkfrc-G9O2NOCp_FrIhQ/exec";
-
-  const $grid = document.getElementById('grid');
-  const $empty = document.getElementById('empty');
-
-  function esc(s){
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-  function level(n){
-    if (n === null) return ''; if (n >= 75) return 'high'; if (n >= 50) return 'mid'; return 'low';
-  }
-
-  // C'est ici que la magie opère : on va chercher les données.
-  async function chargerDonnees() {
-    try {
-      // 1. On appelle l'API (le "cerveau")
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('Erreur réseau');
-      
-      // 2. On récupère les données au format JSON
-      const data = await response.json();
-
-      if (data.error) {
-        console.error("Erreur API:", data.error);
-        $empty.textContent = "Erreur de chargement des données.";
-        $empty.style.display = 'block';
-        return;
-      }
-
-      // 3. On affiche les cartes (le code est le même que le vôtre)
-      if (!data.length){ $empty.style.display='block'; return; }
-
-      $grid.innerHTML = data.map(d => {
-        const lvl = level(d.numeric);
-        const pct = d.numeric !== null ? Math.max(0, Math.min(100, d.numeric)) : 0;
-        const bar = d.numeric !== null ? '<div class="bar"><span style="width:'+pct+'%"></span></div>' : '';
-        return '<div class="card '+lvl+'">' +
-                 '<div class="name">'+esc(d.name)+'</div>' +
-                 '<div class="score">'+esc(d.value)+'</div>' +
-                 bar +
-               '</div>';
-      }).join('');
-
-    } catch (error) {
-      console.error("Erreur de chargement:", error);
-      $empty.textContent = "Impossible de charger les données.";
-      $empty.style.display = 'block';
-    }
-  }
-
-  // On lance le chargement au démarrage de la page
-  chargerDonnees();
-</script>
+    <script>
+        // Variables globales
+        let svg, svgSize, centerX, centerY;
+        let r = 120, thetaDeg = 40;
+        
+        // Initialisation du SVG
+        function initSVG() {
+            const container = document.getElementById('svg-container');
+            svgSize = {
+                width: container.clientWidth,
+                height: container.clientHeight
+            };
+            
+            centerX = svgSize.width / 2;
+            centerY = svgSize.height / 2;
+            
+            if (!svg) {
+                svg = d3.select("#svg-container")
+                    .append("svg")
+                    .attr("width", svgSize.width)
+                    .attr("height", svgSize.height);
+            } else {
+                svg.attr("width", svgSize.width)
+                   .attr("height", svgSize.height);
+            }
+            
+            svg.selectAll("*").remove();
+            
+            const defs = svg.append("defs");
+            
+            defs.append("marker")
+                .attr("id", "thin-arrow")
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("refX", 5)
+                .attr("refY", 3)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M0,0 L0,6 L6,3 Z")
+                .attr("fill", "#0d47a1");
+            
+            defs.append("marker")
+                .attr("id", "very-thin-arrow")
+                .attr("markerWidth", 4)
+                .attr("markerHeight", 4)
+                .attr("refX", 3.5)
+                .attr("refY", 2)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M0,0 L0,4 L4,2 Z")
+                .attr("fill", "#0277bd");
+            
+            drawGrid();
+            drawRepere();
+            initInteractiveElements();
+            updateVisualization();
+        }
+        
+        function drawGrid() {
+            const gridSize = 20;
+            const gridGroup = svg.append("g").attr("class", "grid");
+            
+            const xLines = Math.ceil(svgSize.width / gridSize);
+            const yLines = Math.ceil(svgSize.height / gridSize);
+            
+            for (let i = -xLines; i <= xLines; i++) {
+                const x = centerX + i * gridSize;
+                gridGroup.append("line")
+                    .attr("x1", x).attr("y1", 0)
+                    .attr("x2", x).attr("y2", svgSize.height)
+                    .attr("class", "grid-dense");
+            }
+            
+            for (let i = -yLines; i <= yLines; i++) {
+                const y = centerY + i * gridSize;
+                gridGroup.append("line")
+                    .attr("x1", 0).attr("y1", y)
+                    .attr("x2", svgSize.width).attr("y2", y)
+                    .attr("class", "grid-dense");
+            }
+            
+            const mainGridSize = gridSize * 5;
+            const mainXLines = Math.ceil(svgSize.width / mainGridSize);
+            const mainYLines = Math.ceil(svgSize.height / mainGridSize);
+            
+            for (let i = -mainXLines; i <= mainXLines; i++) {
+                const x = centerX + i * mainGridSize;
+                gridGroup.append("line")
+                    .attr("x1", x).attr("y1", 0)
+                    .attr("x2", x).attr("y2", svgSize.height)
+                    .attr("class", "grid-main");
+                
+                if (i !== 0) {
+                    gridGroup.append("text")
+                        .attr("x", x)
+                        .attr("y", centerY + 15)
+                        .attr("text-anchor", "middle")
+                        .attr("class", "repere-label")
+                        .text(i * 5);
+                }
+            }
+            
+            for (let i = -mainYLines; i <= mainYLines; i++) {
+                const y = centerY + i * mainGridSize;
+                gridGroup.append("line")
+                    .attr("x1", 0).attr("y1", y)
+                    .attr("x2", svgSize.width).attr("y2", y)
+                    .attr("class", "grid-main");
+                
+                if (i !== 0) {
+                    gridGroup.append("text")
+                        .attr("x", centerX - 12)
+                        .attr("y", y + 4)
+                        .attr("text-anchor", "end")
+                        .attr("class", "repere-label")
+                        .text(-i * 5);
+                }
+            }
+        }
+        
+        function drawRepere() {
+            svg.append("line")
+                .attr("x1", 20).attr("y1", centerY)
+                .attr("x2", svgSize.width - 20).attr("y2", centerY)
+                .attr("class", "axis thin-arrow")
+                .attr("marker-end", "url(#thin-arrow)");
+            
+            svg.append("line")
+                .attr("x1", centerX).attr("y1", svgSize.height - 20)
+                .attr("x2", centerX).attr("y2", 20)
+                .attr("class", "axis thin-arrow")
+                .attr("marker-end", "url(#thin-arrow)");
+            
+            svg.append("text")
+                .attr("x", svgSize.width - 20)
+                .attr("y", centerY - 8)
+                .attr("class", "axis-label")
+                .text("x");
+            
+            svg.append("text")
+                .attr("x", centerX + 12)
+                .attr("y", 25)
+                .attr("class", "axis-label")
+                .text("y");
+            
+            svg.append("circle")
+                .attr("cx", centerX)
+                .attr("cy", centerY)
+                .attr("r", 2)
+                .attr("fill", "#0a2463");
+            
+            svg.append("text")
+                .attr("x", centerX - 12)
+                .attr("y", centerY + 20)
+                .attr("class", "origin-label")
+                .text("O");
+            
+            svg.append("line")
+                .attr("x1", centerX).attr("y1", centerY)
+                .attr("x2", centerX + 50).attr("y2", centerY)
+                .attr("class", "vector")
+                .attr("marker-end", "url(#very-thin-arrow)");
+            
+            svg.append("text")
+                .attr("x", centerX + 52)
+                .attr("y", centerY + 3)
+                .attr("class", "vector-label")
+                .text("i");
+            
+            svg.append("line")
+                .attr("x1", centerX).attr("y1", centerY)
+                .attr("x2", centerX).attr("y2", centerY - 50)
+                .attr("class", "vector")
+                .attr("marker-end", "url(#very-thin-arrow)");
+            
+            svg.append("text")
+                .attr("x", centerX - 3)
+                .attr("y", centerY - 52)
+                .attr("class", "vector-label")
+                .text("j");
+            
+            svg.append("text")
+                .attr("x", centerX - 35)
+                .attr("y", centerY - 70)
+                .attr("class", "repere-label")
+                .text("(O; i, j)");
+        }
+        
+        function initInteractiveElements() {
+            const projectionsGroup = svg.append("g").attr("class", "projections");
+            const polarGroup = svg.append("g").attr("class", "polar");
+            const pointGroup = svg.append("g").attr("class", "point");
+            const vectorGroup = svg.append("g").attr("class", "vectors");
+            
+            projectionsGroup.append("line").attr("class", "projection-line");
+            projectionsGroup.append("line").attr("class", "projection-line");
+            
+            projectionsGroup.append("circle").attr("class", "projection-point").attr("r", 3);
+            projectionsGroup.append("circle").attr("class", "projection-point").attr("r", 3);
+            
+            projectionsGroup.append("text").attr("class", "coord-text");
+            projectionsGroup.append("text").attr("class", "coord-text");
+            
+            polarGroup.append("path").attr("class", "arc");
+            polarGroup.append("line").attr("class", "radius-line");
+            polarGroup.append("text").attr("class", "radius-text");
+            polarGroup.append("text").attr("class", "angle-text");
+            
+            vectorGroup.append("line")
+                .attr("class", "vector-om")
+                .attr("stroke-width", 2);
+            
+            pointGroup.append("circle")
+                .attr("class", "point-m")
+                .attr("r", 6)
+                .call(d3.drag()
+                    .on("start", dragStarted)
+                    .on("drag", dragged)
+                    .on("end", dragEnded));
+            
+            pointGroup.append("text")
+                .attr("class", "axis-label")
+                .attr("font-size", "16");
+        }
+        
+        function dragStarted(event) {
+            d3.select(this).raise().classed("active", true);
+        }
+        
+        function dragged(event) {
+            const mouseX = event.x;
+            const mouseY = event.y;
+            
+            const boundedX = Math.max(20, Math.min(svgSize.width - 20, mouseX));
+            const boundedY = Math.max(20, Math.min(svgSize.height - 20, mouseY));
+            
+            const relX = boundedX - centerX;
+            const relY = centerY - boundedY;
+            
+            r = Math.sqrt(relX * relX + relY * relY);
+            let theta = Math.atan2(relY, relX) * 180 / Math.PI;
+            
+            if (theta < 0) theta += 360;
+            
+            r = Math.max(10, Math.min(180, r));
+            thetaDeg = Math.round(theta * 10) / 10;
+            
+            updateVisualization();
+        }
+        
+        function dragEnded(event) {
+            d3.select(this).classed("active", false);
+        }
+        
+        function updateVisualization() {
+            const thetaRad = thetaDeg * Math.PI / 180;
+            const x = r * Math.cos(thetaRad);
+            const y = r * Math.sin(thetaRad);
+            
+            const pointX = centerX + x;
+            const pointY = centerY - y;
+            
+            svg.select(".point-m")
+                .attr("cx", pointX)
+                .attr("cy", pointY);
+            
+            svg.select(".point-m + text")
+                .attr("x", pointX + 12)
+                .attr("y", pointY - 12)
+                .text("M");
+            
+            svg.select(".vector-om")
+                .attr("x1", centerX).attr("y1", centerY)
+                .attr("x2", pointX).attr("y2", pointY);
+            
+            svg.select(".radius-line")
+                .attr("x1", centerX).attr("y1", centerY)
+                .attr("x2", pointX).attr("y2", pointY);
+            
+            const midX = centerX + x * 0.4;
+            const midY = centerY - y * 0.4;
+            svg.select(".radius-text")
+                .attr("x", midX - 15)
+                .attr("y", midY - 8)
+                .text(`r = ${r.toFixed(1)}`);
+            
+            const arcRadius = Math.min(45, r * 0.25);
+            const largeArcFlag = Math.abs(thetaDeg) > 180 ? 1 : 0;
+            const sweepFlag = thetaDeg >= 0 ? 0 : 1;
+            
+            const endX = centerX + arcRadius * Math.cos(thetaRad);
+            const endY = centerY - arcRadius * Math.sin(thetaRad);
+            
+            const arcPathData = [
+                `M ${centerX + arcRadius} ${centerY}`,
+                `A ${arcRadius} ${arcRadius} 0 ${largeArcFlag} ${sweepFlag} ${endX} ${endY}`
+            ].join(' ');
+            
+            svg.select(".arc").attr("d", arcPathData);
+            
+            const labelAngle = thetaDeg / 2;
+            const labelRad = labelAngle * Math.PI / 180;
+            const labelDistance = arcRadius + 15;
+            svg.select(".angle-text")
+                .attr("x", centerX + labelDistance * Math.cos(labelRad))
+                .attr("y", centerY - labelDistance * Math.sin(labelRad) + 5)
+                .text(`θ = ${thetaDeg.toFixed(1)}°`);
+            
+            const projections = svg.selectAll(".projection-line");
+            projections.nodes()[0].setAttribute("x1", pointX);
+            projections.nodes()[0].setAttribute("y1", pointY);
+            projections.nodes()[0].setAttribute("x2", pointX);
+            projections.nodes()[0].setAttribute("y2", centerY);
+            
+            projections.nodes()[1].setAttribute("x1", pointX);
+            projections.nodes()[1].setAttribute("y1", pointY);
+            projections.nodes()[1].setAttribute("x2", centerX);
+            projections.nodes()[1].setAttribute("y2", pointY);
+            
+            const projPoints = svg.selectAll(".projection-point");
+            projPoints.nodes()[0].setAttribute("cx", pointX);
+            projPoints.nodes()[0].setAttribute("cy", centerY);
+            projPoints.nodes()[1].setAttribute("cx", centerX);
+            projPoints.nodes()[1].setAttribute("cy", pointY);
+            
+            const coordTexts = svg.selectAll(".coord-text");
+            coordTexts.nodes()[0].setAttribute("x", pointX - 20);
+            coordTexts.nodes()[0].setAttribute("y", centerY + 20);
+            coordTexts.nodes()[0].textContent = `x = ${x.toFixed(1)}`;
+            
+            coordTexts.nodes()[1].setAttribute("x", centerX + 12);
+            coordTexts.nodes()[1].setAttribute("y", pointY - 8);
+            coordTexts.nodes()[1].textContent = `y = ${y.toFixed(1)}`;
+            
+            document.getElementById('cartesian-coords').textContent = `(${x.toFixed(2)}, ${y.toFixed(2)})`;
+            document.getElementById('polar-coords').textContent = `(${r.toFixed(2)}, ${thetaDeg.toFixed(1)}°)`;
+            document.getElementById('vector-coords').textContent = `(${x.toFixed(2)}, ${y.toFixed(2)})`;
+        }
+        
+        // Cache le loader une fois que tout est prêt
+        function hideLoader() {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.add('hidden');
+                setTimeout(() => loader.remove(), 500);
+            }
+        }
+        
+        // Attend que D3 soit effectivement chargé avant d'initialiser
+        function waitForD3(callback) {
+            if (typeof d3 !== 'undefined') {
+                callback();
+            } else {
+                setTimeout(() => waitForD3(callback), 50);
+            }
+        }
+        
+        function init() {
+            try {
+                initSVG();
+                updateVisualization();
+            } catch (e) {
+                console.error("Erreur à l'initialisation:", e);
+            } finally {
+                hideLoader();
+            }
+        }
+        
+        // Redimensionnement
+        window.addEventListener('resize', () => {
+            if (typeof d3 !== 'undefined') init();
+        });
+        
+        // Démarrage : attendre D3 avant d'initialiser
+        document.addEventListener('DOMContentLoaded', () => {
+            waitForD3(init);
+        });
+        
+        // Sécurité : si D3 met trop de temps, on cache le loader au bout de 8s
+        setTimeout(hideLoader, 8000);
+    </script>
 </body>
 </html>
