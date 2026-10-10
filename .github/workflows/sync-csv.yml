@@ -2,9 +2,8 @@ name: Sync CSV depuis Google Sheets
 
 on:
   schedule:
-    # Toutes les 5 minutes
     - cron: '*/5 * * * *'
-  workflow_dispatch: # Permet aussi de le lancer manuellement
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -21,13 +20,13 @@ jobs:
           curl -L -o formations.csv \
             "https://docs.google.com/spreadsheets/d/e/2PACX-1vQmr4PCIaLG4QmtwpvNk5suRMfYuRpF1-o5Sf022BIXPYkdMbMxXZxchwxh06cnhLBzu2epcxeO7ouG/pub?gid=0&single=true&output=csv"
 
-      - name: Vérifier si le fichier a changé
+      - name: Vérifier si le fichier a changé ou est nouveau
         id: check
         run: |
-          if git diff --quiet formations.csv; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
+          if [ -f formations.csv ] && git status --porcelain formations.csv | grep -q .; then
             echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Commit et push si changement
