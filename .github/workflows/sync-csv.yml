@@ -14,26 +14,23 @@ jobs:
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
+        with:
+          ref: principal
+          fetch-depth: 0
 
       - name: Télécharger le CSV depuis Google Sheets
         run: |
           curl -L -o formations.csv \
             "https://docs.google.com/spreadsheets/d/e/2PACX-1vQmr4PCIaLG4QmtwpvNk5suRMfYuRpF1-o5Sf022BIXPYkdMbMxXZxchwxh06cnhLBzu2epcxeO7ouG/pub?gid=0&single=true&output=csv"
 
-      - name: Vérifier si le fichier a changé ou est nouveau
-        id: check
-        run: |
-          if [ -f formations.csv ] && git status --porcelain formations.csv | grep -q .; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit et push si changement
-        if: steps.check.outputs.changed == 'true'
+      - name: Ajouter et commiter le CSV
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add formations.csv
-          git commit -m "Mise à jour automatique du CSV"
-          git push
+          if git diff --cached --quiet; then
+            echo "Aucun changement à commiter"
+          else
+            git commit -m "Mise à jour automatique du CSV"
+            git push origin principal
+          fi
