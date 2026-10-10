@@ -20,14 +20,19 @@ jobs:
           curl -L -o formations.csv \
             "https://docs.google.com/spreadsheets/d/e/2PACX-1vQmr4PCIaLG4QmtwpvNk5suRMfYuRpF1-o5Sf022BIXPYkdMbMxXZxchwxh06cnhLBzu2epcxeO7ouG/pub?gid=0&single=true&output=csv"
 
-      - name: Ajouter et commiter le CSV
+      - name: Écrire la date de mise à jour
+        run: |
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > last-update.txt
+          echo "Date enregistrée : $(cat last-update.txt)"
+
+      - name: Commit et push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add formations.csv
+          git add formations.csv last-update.txt
           if git diff --cached --quiet; then
             echo "Aucun changement à commiter"
           else
-            git commit -m "Mise à jour automatique du CSV"
+            git commit -m "Mise à jour automatique du CSV et de la date"
             git push
           fi
