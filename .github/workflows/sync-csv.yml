@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
+        with:
+          ref: principal
+          fetch-depth: 0
 
       - name: Télécharger le CSV depuis Google Sheets
         run: |
@@ -25,7 +28,7 @@ jobs:
           date -u +"%Y-%m-%dT%H:%M:%SZ" > last-update.txt
           echo "Date enregistrée : $(cat last-update.txt)"
 
-      - name: Commit et push
+      - name: Commit et push sur la branche principal
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -34,5 +37,5 @@ jobs:
             echo "Aucun changement à commiter"
           else
             git commit -m "Mise à jour automatique du CSV et de la date"
-            git push
+            git push origin HEAD:principal
           fi
