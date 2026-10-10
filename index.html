@@ -20,25 +20,59 @@
     -webkit-font-smoothing:antialiased;
     width:100%; max-width:100%; overflow-x:hidden;
   }
-  .wrap{width:100%;max-width:1200px;margin:0 auto;padding:12px;overflow-x:hidden}
+  .wrap{width:100%;max-width:1400px;margin:0 auto;padding:12px;overflow-x:hidden}
 
   .header{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     padding:16px 14px;margin-bottom:14px;text-align:center;
   }
-  .header .banner{
-    display:block;margin:0 auto 12px;
-    max-width:600px;width:100%;height:auto;
-  }
+  .header .banner{display:block;margin:0 auto 12px;max-width:600px;width:100%;height:auto}
   .header h1{margin:0;font-size:18px;font-weight:700;line-height:1.3}
   .header .subtitle{margin:6px 0 0;font-size:13px;color:#667085;font-weight:500}
-
-  .cards-grid{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:12px;
+  .header .updated{
+    margin-top:10px;font-size:12px;color:#98a2b3;
+    display:inline-flex;align-items:center;gap:6px;
   }
+  .header .updated .dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--success);
+  }
+
+  .tabs{
+    display:flex;gap:4px;margin-bottom:16px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:4px;box-shadow:var(--shadow);
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+  }
+  .tab{
+    flex:1 1 auto;min-width:max-content;
+    padding:10px 16px;border:none;background:transparent;
+    font-size:14px;font-weight:600;color:#667085;
+    border-radius:8px;cursor:pointer;white-space:nowrap;
+    transition:background .15s,color .15s;
+  }
+  .tab:hover{background:#f0f4f9;color:#1f2430}
+  .tab.active{background:var(--accent);color:#fff}
+  body.layout-mobile .tab{font-size:15px;padding:12px 14px}
+
+  .panel{display:none}
+  .panel.active{display:block}
+
+  .sortbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+  .sortbar label{font-size:13px;color:#475467;font-weight:500}
+  .sortbar select{
+    padding:8px 10px;border:1px solid var(--border);border-radius:8px;
+    background:var(--card);font-size:14px;color:var(--text);
+    outline:none;cursor:pointer;max-width:100%;flex:1 1 160px;
+  }
+  .sortbar .dir{
+    padding:8px 10px;border:1px solid var(--border);border-radius:8px;
+    background:var(--card);font-size:13px;cursor:pointer;white-space:nowrap;
+  }
+
+  .cards, .table-wrap { display:block; }
+  .cards-grid{display:grid;grid-template-columns:1fr;gap:12px}
 
   .card{
     background:var(--card);border:1px solid var(--border);
@@ -63,6 +97,42 @@
   .card.low .bar span{background:var(--danger)}
   .card.unknown .value{color:var(--muted);font-weight:500}
 
+  .card.detail h3{color:var(--accent);margin-bottom:8px;font-size:16px}
+  .card.detail .row{
+    display:grid;grid-template-columns:1fr auto;align-items:center;
+    gap:12px;padding:8px 0;border-bottom:1px dashed var(--border);
+    font-size:14px;
+  }
+  .card.detail .row:last-child{border-bottom:none}
+  .card.detail .row .k{color:#475467;font-size:13.5px;min-width:0;word-break:break-word}
+  .card.detail .row .v{
+    text-align:right;font-weight:700;color:var(--accent);
+    font-variant-numeric:tabular-nums;white-space:nowrap;font-size:15px;
+  }
+  .card.detail .row .v.empty{color:var(--muted);font-weight:500}
+
+  .table-wrap{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;
+  }
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:0}
+  thead th{
+    position:sticky;top:0;background:var(--accent);color:#fff;
+    text-align:left;padding:10px 12px;font-weight:600;
+    white-space:nowrap;cursor:pointer;user-select:none;
+  }
+  thead th:hover{background:#1558b0}
+  thead th:not(:first-child){text-align:right}
+  thead th .arrow{display:inline-block;margin-left:6px;opacity:.4;font-size:11px}
+  thead th.sorted .arrow{opacity:1}
+  tbody td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:top;word-break:break-word}
+  tbody td:first-child{font-weight:600;color:#344054}
+  tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
+  tbody td.empty{color:var(--muted);font-weight:400}
+  tbody tr:nth-child(even){background:#fafbfd}
+  tbody tr:hover{background:#eef4ff}
+
   .loading{
     text-align:center;padding:40px 16px;color:var(--muted);font-size:15px;
     display:flex;align-items:center;justify-content:center;gap:12px;
@@ -76,31 +146,48 @@
 
   .empty-msg{text-align:center;padding:40px;color:var(--muted);font-size:14px}
 
+  footer.foot{
+    text-align:center;padding:24px 16px 12px;
+    font-size:12px;color:#98a2b3;
+  }
+
   /* RESPONSIVE */
   body.layout-mobile .wrap{padding:14px}
   body.layout-mobile .header{padding:18px 16px;margin-bottom:16px}
   body.layout-mobile .header h1{font-size:22px}
   body.layout-mobile .header .subtitle{font-size:15px;margin-top:8px}
-  body.layout-mobile .card{padding:18px 18px}
-  body.layout-mobile .card h3{font-size:17px}
+  body.layout-mobile .sortbar{gap:10px;margin-bottom:16px}
+  body.layout-mobile .sortbar label{font-size:15px}
+  body.layout-mobile .sortbar select{font-size:16px;padding:10px 12px}
+  body.layout-mobile .sortbar .dir{font-size:15px;padding:10px 12px}
+  body.layout-mobile #panel-full .table-wrap{display:none}
+  body.layout-mobile #panel-full .cards{display:block}
+  body.layout-mobile .card{padding:16px 18px}
   body.layout-mobile .card .value{font-size:32px}
+  body.layout-mobile .card.detail .row{grid-template-columns:1fr auto;gap:14px;padding:12px 0}
+  body.layout-mobile .card.detail .row .k{font-size:14.5px;line-height:1.35}
+  body.layout-mobile .card.detail .row .v{font-size:16px}
 
   body.layout-tablet .wrap{padding:16px}
   body.layout-tablet .header{padding:22px 18px}
   body.layout-tablet .header h1{font-size:24px}
   body.layout-tablet .header .subtitle{font-size:15px}
   body.layout-tablet .cards-grid{grid-template-columns:repeat(2,1fr);gap:14px}
-  body.layout-tablet .card h3{font-size:16px}
-  body.layout-tablet .card .value{font-size:30px}
+  body.layout-tablet #panel-full .table-wrap{display:none}
+  body.layout-tablet #panel-full .cards{display:block}
 
   body.layout-desktop .wrap{padding:20px}
   body.layout-desktop .header{padding:28px 24px}
   body.layout-desktop .header h1{font-size:24px}
   body.layout-desktop .header .subtitle{font-size:15px}
-  body.layout-desktop .cards-grid{
+  body.layout-desktop .sortbar{display:none}
+
+  body.layout-desktop #panel-sat .cards-grid{
     grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
     gap:16px;
   }
+  body.layout-desktop #panel-full .cards{display:none}
+  body.layout-desktop #panel-full .table-wrap{display:block}
 </style>
 </head>
 <body>
@@ -111,16 +198,49 @@
       src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg"
       alt="Lycée Maritime Boulogne">
     <h1>Lycée Professionnel Maritime Boulogne - Le Portel</h1>
-    <p class="subtitle">Formations FC — Taux de satisfaction par formation</p>
+    <p class="subtitle">Formations FC — Évaluation à chaud des formations</p>
+    <div class="updated" id="updated" style="display:none">
+      <span class="dot"></span>
+      <span>Données mises à jour le <span id="updated-date">…</span></span>
+    </div>
   </header>
 
-  <div class="loading" id="loading">
-    <div class="spin"></div>
-    <div>Chargement des données…</div>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="sat" role="tab">Taux de satisfaction</button>
+    <button class="tab" data-tab="full" role="tab">Évaluation complète</button>
   </div>
 
-  <div class="cards-grid" id="grid" style="display:none"></div>
-  <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
+  <div class="panel active" id="panel-sat">
+    <div class="loading" id="loading1">
+      <div class="spin"></div>
+      <div>Chargement des taux de satisfaction…</div>
+    </div>
+    <div class="cards" id="cards1" style="display:none">
+      <div class="cards-grid" id="grid1"></div>
+    </div>
+    <div class="empty-msg" id="empty1" style="display:none">Aucune donnée de satisfaction disponible</div>
+  </div>
+
+  <div class="panel" id="panel-full">
+    <div class="sortbar" id="sortbar2" style="display:none">
+      <label for="sortSelect2">Trier par :</label>
+      <select id="sortSelect2"></select>
+      <button class="dir" id="sortDir2" type="button">▲ Croissant</button>
+    </div>
+    <div class="loading" id="loading2">
+      <div class="spin"></div>
+      <div>Chargement du détail…</div>
+    </div>
+    <div class="cards" id="cards2" style="display:none"></div>
+    <div class="table-wrap" id="tableWrap2" style="display:none">
+      <table id="table2"></table>
+    </div>
+    <div class="empty-msg" id="empty2" style="display:none">Aucune donnée détaillée disponible</div>
+  </div>
+
+  <footer class="foot">
+    Source : Google Sheets — synchronisation automatique.
+  </footer>
 </div>
 
 <script>
@@ -128,15 +248,18 @@
      1) LAYOUT
      ============================================================ */
   function applyLayout(){
-    var w = Math.min(
-      window.innerWidth || 9999,
-      document.documentElement.clientWidth || 9999,
-      screen.width || 9999
-    );
+    var w = Math.min(window.innerWidth||9999, document.documentElement.clientWidth||9999, screen.width||9999);
+    var prev = document.body.classList.contains('layout-mobile') ? 'mobile'
+             : document.body.classList.contains('layout-tablet') ? 'tablet'
+             : document.body.classList.contains('layout-desktop') ? 'desktop' : '';
     document.body.classList.remove('layout-mobile','layout-tablet','layout-desktop');
-    if (w < 700)       document.body.classList.add('layout-mobile');
-    else if (w < 1000) document.body.classList.add('layout-tablet');
-    else               document.body.classList.add('layout-desktop');
+    var next = w < 700 ? 'mobile' : w < 1000 ? 'tablet' : 'desktop';
+    document.body.classList.add('layout-' + next);
+
+    if (prev && prev !== next){
+      if (window.DATA2 && DATA2.rows && DATA2.rows.length) renderComplet();
+      if (window.DATA_SAT && DATA_SAT.length) renderSatisfaction(DATA_SAT);
+    }
   }
   applyLayout();
   window.addEventListener('resize', applyLayout);
@@ -148,12 +271,7 @@
      2) CONFIGURATION
      ============================================================ */
   const CSV_FILE = 'formations.csv';
-  const CACHE_KEY = 'formations-csv-v1';
-  const CACHE_MAX_AGE_MS = 5 * 60 * 1000;
-
-  const $loading = document.getElementById('loading');
-  const $grid    = document.getElementById('grid');
-  const $empty   = document.getElementById('empty');
+  const DATE_FILE = 'last-update.txt';
 
   /* ============================================================
      3) UTILITAIRES
@@ -174,12 +292,8 @@
      4) PARSING CSV
      ============================================================ */
   function parseCSV(text){
-    // Split robuste : gère les guillemets et les virgules dans les cellules
     const rows = [];
-    let cur = [];
-    let field = '';
-    let inQuotes = false;
-
+    let cur = [], field = '', inQuotes = false;
     for (let i = 0; i < text.length; i++){
       const c = text[i];
       if (inQuotes){
@@ -191,11 +305,11 @@
         if (c === '"') inQuotes = true;
         else if (c === ','){ cur.push(field); field = ''; }
         else if (c === '\n'){ cur.push(field); rows.push(cur); cur = []; field = ''; }
-        else if (c === '\r'){ /* ignore */ }
+        else if (c === '\r'){ }
         else field += c;
       }
     }
-    if (field !== '' || cur.length) { cur.push(field); rows.push(cur); }
+    if (field !== '' || cur.length){ cur.push(field); rows.push(cur); }
     return rows.filter(r => r.some(c => c.trim() !== ''));
   }
 
@@ -203,83 +317,75 @@
      5) TRANSFORMATION CSV → DONNÉES
      ============================================================ */
   const FORMATION_NAMES = {
-    "CMP":          "Certificat Matelot Pont",
-    "Meca750":      "Mécanicien 750 Kw",
-    "Meca250":      "Mécanicien 250 Kw",
-    "C200":         "Capitaine 200",
-    "RecyCap2000":  "Recyclage Capitaine 200",
-    "ModPeche":     "Module Pêche",
-    "CAEERSini":    "CAEERS Initial",
-    "RecyCAEERS":   "Recyclage CAEERS",
-    "CFBS":         "CFBS",
-    "RecyCFBS":     "Recyclage CFBS",
-    "CSS":          "CSS",
-    "RecyMed1":     "Recyclage Médical 1",
-    "CRO":          "CRO",
-    "CGO":          "CGO",
-    "RecyCRO":      "Recyclage CRO",
-    "RecyCGO":      "Recyclage CGO",
-    "Med2":         "Médical 2",
-    "RecyMed2":     "Recyclage Médical 2",
-    "NavPaxNOff":   "NavPax Non Officier",
-    "NavPaxOff":    "NavPax Officier",
-    "C500":         "Capitaine 500"
+    "CMP":"Certificat Matelot Pont","Meca750":"Mécanicien 750 Kw","Meca250":"Mécanicien 250 Kw",
+    "C200":"Capitaine 200","RecyCap2000":"Recyclage Capitaine 200","ModPeche":"Module Pêche",
+    "CAEERSini":"CAEERS Initial","RecyCAEERS":"Recyclage CAEERS","CFBS":"CFBS","RecyCFBS":"Recyclage CFBS",
+    "CSS":"CSS","RecyMed1":"Recyclage Médical 1","CRO":"CRO","CGO":"CGO","RecyCRO":"Recyclage CRO",
+    "RecyCGO":"Recyclage CGO","Med2":"Médical 2","RecyMed2":"Recyclage Médical 2",
+    "NavPaxNOff":"NavPax Non Officier","NavPaxOff":"NavPax Officier","C500":"Capitaine 500"
   };
 
+  const isError = v => /^#(DIV\/0!|N\/A|VALUE!|REF!|NAME\?|NUM!|NULL!)/i.test(v);
+
   function csvToData(rows){
-    if (!rows || rows.length < 2) return [];
+    if (!rows || rows.length < 2) return { satisfaction: [], complet: { indicators: [], rows: [] } };
+
     const headers = rows[0].map(h => h.trim());
+    const indicators = headers.slice(1);
 
     let satIdx = headers.findIndex(h => /satisfaction/i.test(h));
     if (satIdx === -1) satIdx = headers.length - 1;
 
-    const isError = v => /^#(DIV\/0!|N\/A|VALUE!|REF!|NAME\?|NUM!|NULL!)/i.test(v);
-
-    return rows.slice(1)
+    const completRows = rows.slice(1)
       .filter(r => r[0] && r[0].trim() !== '')
       .map(r => {
         const code = r[0].trim();
-        const raw  = (r[satIdx] || '').trim();
-        const hasValue = raw !== '' && !isError(raw);
+        const name = FORMATION_NAMES[code] || code;
+        const cells = indicators.map((_, i) => {
+          const raw = (r[i+1] || '').trim();
+          const bad = raw === '' || isError(raw);
+          let num = null;
+          if (!bad){
+            const cleaned = raw.replace(/[%\s]/g,'').replace(',','.');
+            const n = parseFloat(cleaned);
+            if (!isNaN(n)) num = n;
+          }
+          return { value: bad ? '—' : raw, empty: bad, num };
+        });
+        return { code, name, cells, hasAnyValue: cells.some(c => !c.empty) };
+      });
 
-        let numeric = null;
-        if (hasValue){
-          const cleaned = raw.replace('%','').replace(',','.').replace(/\s/g,'');
-          const n = parseFloat(cleaned);
-          if (!isNaN(n)) numeric = n;
-        }
+    const satisfaction = completRows
+      .map(r => {
+        const c = r.cells[satIdx - 1];
         return {
-          code,
-          name: FORMATION_NAMES[code] || code,
-          value: hasValue ? raw : '—',
-          numeric,
-          hasValue
+          code: r.code,
+          name: r.name,
+          value: c ? c.value : '—',
+          numeric: c ? c.num : null,
+          hasValue: c && !c.empty
         };
       })
       .filter(d => d.hasValue)
       .sort((a, b) => (b.numeric ?? -1) - (a.numeric ?? -1));
+
+    return {
+      satisfaction,
+      complet: { indicators, rows: completRows }
+    };
   }
 
   /* ============================================================
-     6) CACHE LOCAL
+     6) RENDU — Satisfaction
      ============================================================ */
-  function lireCache(){
-    try {
-      const raw = localStorage.getItem(CACHE_KEY);
-      if (!raw) return null;
-      const obj = JSON.parse(raw);
-      if (Date.now() - obj.time > CACHE_MAX_AGE_MS) return null;
-      return obj.data;
-    } catch(e){ return null; }
-  }
-  function ecrireCache(data){
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), data })); } catch(e){}
-  }
+  let DATA_SAT = [];
+  function renderSatisfaction(rows){
+    DATA_SAT = rows || [];
+    const $loading = document.getElementById('loading1');
+    const $cards   = document.getElementById('cards1');
+    const $grid    = document.getElementById('grid1');
+    const $empty   = document.getElementById('empty1');
 
-  /* ============================================================
-     7) RENDU
-     ============================================================ */
-  function render(rows){
     if (!Array.isArray(rows) || !rows.length){
       $loading.style.display = 'none';
       $empty.style.display = 'block';
@@ -288,8 +394,7 @@
     $grid.innerHTML = rows.map(d => {
       const lvl = level(d.numeric);
       const pct = d.numeric != null ? Math.max(0, Math.min(100, d.numeric)) : 0;
-      const bar = d.numeric != null
-        ? '<div class="bar"><span style="width:'+pct+'%"></span></div>' : '';
+      const bar = d.numeric != null ? '<div class="bar"><span style="width:'+pct+'%"></span></div>' : '';
       return '<div class="card '+lvl+'">' +
                '<h3>'+esc(d.name || d.code || '')+'</h3>' +
                '<div class="value">'+esc(d.value || '—')+'</div>' +
@@ -297,23 +402,173 @@
              '</div>';
     }).join('');
     $loading.style.display = 'none';
-    $grid.style.display = 'grid';
+    $cards.style.display = 'block';
     $empty.style.display = 'none';
   }
 
   /* ============================================================
-     8) CHARGEMENT
+     7) RENDU — Détail complet
      ============================================================ */
-  async function chargerDonnees(){
-    // 1) Affichage immédiat depuis le cache
-    const cached = lireCache();
-    if (cached && Array.isArray(cached) && cached.length){
-      render(cached);
-    }
+  let DATA2 = { indicators: [], rows: [] };
+  window.DATA2 = DATA2;
+  let sortKey2 = 'name';
+  let sortAsc2 = true;
 
-    // 2) Rafraîchissement depuis le CSV
+  function getValue2(row, key){
+    if (key === 'name') return row.name.toLowerCase();
+    const i = parseInt(key.replace('col',''), 10);
+    const c = row.cells[i];
+    if (c.empty) return null;
+    return c.num != null ? c.num : c.value.toLowerCase();
+  }
+  function sortRows2(rows){
+    return rows.slice().sort((a, b) => {
+      const va = getValue2(a, sortKey2), vb = getValue2(b, sortKey2);
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1;
+      if (vb === null) return -1;
+      if (typeof va === 'number' && typeof vb === 'number'){
+        return sortAsc2 ? va - vb : vb - va;
+      }
+      const sa = String(va), sb = String(vb);
+      return sortAsc2 ? sa.localeCompare(sb,'fr') : sb.localeCompare(sa,'fr');
+    });
+  }
+
+  function renderComplet(){
+    const $loading   = document.getElementById('loading2');
+    const $cards     = document.getElementById('cards2');
+    const $table     = document.getElementById('table2');
+    const $tableWrap = document.getElementById('tableWrap2');
+    const $empty     = document.getElementById('empty2');
+    const $sortbar   = document.getElementById('sortbar2');
+
+    if (!DATA2.rows || !DATA2.rows.length){
+      $loading.style.display = 'none';
+      $empty.style.display = 'block';
+      return;
+    }
+    const rows = sortRows2(DATA2.rows);
+
+    const thead = '<thead><tr>' +
+      '<th data-key="name" class="'+(sortKey2==='name'?'sorted':'')+'">Formation' +
+      '<span class="arrow">'+(sortKey2==='name'?(sortAsc2?'▲':'▼'):'▲')+'</span></th>' +
+      DATA2.indicators.map((h, i) => {
+        const k = 'col'+i;
+        const cls = sortKey2===k ? 'sorted' : '';
+        const arr = sortKey2===k ? (sortAsc2?'▲':'▼') : '▲';
+        return '<th data-key="'+k+'" class="'+cls+'">'+esc(h)+
+               '<span class="arrow">'+arr+'</span></th>';
+      }).join('') + '</tr></thead>';
+
+    const tbody = '<tbody>' + rows.map(r =>
+      '<tr><td>'+esc(r.name)+'</td>' +
+      r.cells.map(c => '<td class="'+(c.empty?'empty':'')+'">'+esc(c.value)+'</td>').join('') +
+      '</tr>'
+    ).join('') + '</tbody>';
+
+    $table.innerHTML = thead + tbody;
+
+    $cards.innerHTML = rows.map(r => {
+      const items = DATA2.indicators.map((label, i) => {
+        const c = r.cells[i];
+        return '<div class="row"><span class="k">'+esc(label)+'</span>' +
+               '<span class="v'+(c.empty?' empty':'')+'">'+esc(c.value)+'</span></div>';
+      }).join('');
+      return '<div class="card detail"><h3>'+esc(r.name)+'</h3>'+items+'</div>';
+    }).join('');
+
+    $table.querySelectorAll('thead th').forEach(th => {
+      th.addEventListener('click', () => {
+        const k = th.dataset.key;
+        if (k === sortKey2) sortAsc2 = !sortAsc2;
+        else { sortKey2 = k; sortAsc2 = true; }
+        renderComplet();
+      });
+    });
+
+    const isDesk = document.body.classList.contains('layout-desktop');
+    $loading.style.display = 'none';
+    $empty.style.display = 'none';
+    $sortbar.style.display = isDesk ? 'none' : 'flex';
+    $tableWrap.style.display = isDesk ? 'block' : 'none';
+    $cards.style.display = isDesk ? 'none' : 'block';
+  }
+
+  function initSortBar2(){
+    const $select = document.getElementById('sortSelect2');
+    const $dirBtn = document.getElementById('sortDir2');
+    if (!$select) return;
+    $select.innerHTML = '';
+    const cols = [{ key: 'name', label: 'Formation' },
+      ...DATA2.indicators.map((h, i) => ({ key: 'col'+i, label: h }))];
+    cols.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.key;
+      opt.textContent = c.label;
+      $select.appendChild(opt);
+    });
+    $select.value = sortKey2;
+
+    if (!$select.dataset.bound){
+      $select.addEventListener('change', () => {
+        sortKey2 = $select.value;
+        sortAsc2 = true;
+        renderComplet();
+      });
+      $select.dataset.bound = '1';
+    }
+    if ($dirBtn && !$dirBtn.dataset.bound){
+      $dirBtn.addEventListener('click', () => {
+        sortAsc2 = !sortAsc2;
+        renderComplet();
+      });
+      $dirBtn.dataset.bound = '1';
+    }
+    if ($dirBtn) $dirBtn.textContent = sortAsc2 ? '▲ Croissant' : '▼ Décroissant';
+  }
+
+  /* ============================================================
+     8) ONGLETS
+     ============================================================ */
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + t.dataset.tab));
+      setTimeout(() => {
+        const isDesk = document.body.classList.contains('layout-desktop');
+        const $tw = document.getElementById('tableWrap2');
+        const $c2 = document.getElementById('cards2');
+        if ($tw) $tw.style.display = isDesk ? 'block' : 'none';
+        if ($c2) $c2.style.display = isDesk ? 'none' : 'block';
+      }, 50);
+    });
+  });
+
+  /* ============================================================
+     9) DATE DE MISE À JOUR
+     ============================================================ */
+  async function chargerDate(){
     try {
-      // Cache busting : ajoute un timestamp pour éviter le cache navigateur du CSV
+      const r = await fetch(DATE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) return;
+      const txt = (await r.text()).trim();
+      if (!txt) return;
+      const d = new Date(txt);
+      if (isNaN(d)) return;
+      const opts = { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' };
+      document.getElementById('updated-date').textContent = d.toLocaleString('fr-FR', opts);
+      document.getElementById('updated').style.display = 'inline-flex';
+    } catch(e){
+      console.warn("Date non disponible:", e);
+    }
+  }
+
+  /* ============================================================
+     10) CHARGEMENT
+     ============================================================ */
+  async function chargerTout(){
+    try {
       const url = CSV_FILE + '?t=' + Math.floor(Date.now() / (5 * 60 * 1000));
       const response = await fetch(url, { cache: 'no-store' });
       if (!response.ok) throw new Error('Erreur ' + response.status);
@@ -321,20 +576,32 @@
       const rows = parseCSV(csv);
       const data = csvToData(rows);
 
-      ecrireCache(data);
-      render(data);
-      console.log("CSV OK —", data.length, "formations");
-    } catch (e) {
-      console.error("Erreur chargement CSV:", e);
-      if (!cached){
-        $loading.style.display = 'none';
-        $empty.textContent = "Impossible de charger les données : " + e.message;
-        $empty.style.display = 'block';
+      renderSatisfaction(data.satisfaction || []);
+      if (data.complet && data.complet.rows && data.complet.rows.length){
+        DATA2 = data.complet;
+        window.DATA2 = DATA2;
+        initSortBar2();
+        renderComplet();
+      } else {
+        document.getElementById('loading2').style.display = 'none';
+        document.getElementById('empty2').style.display = 'block';
       }
+      console.log("CSV OK —",
+        (data.satisfaction||[]).length, "satisfactions,",
+        (data.complet && data.complet.rows || []).length, "lignes détail");
+    } catch (e) {
+      console.error("Erreur chargement:", e);
+      document.getElementById('loading1').style.display = 'none';
+      document.getElementById('loading2').style.display = 'none';
+      document.getElementById('empty1').textContent = "Impossible de charger : " + e.message;
+      document.getElementById('empty1').style.display = 'block';
+      document.getElementById('empty2').textContent = "Impossible de charger : " + e.message;
+      document.getElementById('empty2').style.display = 'block';
     }
   }
 
-  chargerDonnees();
+  chargerTout();
+  chargerDate();
 </script>
 </body>
 </html>
