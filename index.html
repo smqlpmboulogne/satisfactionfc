@@ -48,48 +48,61 @@
   }
   .wrap{width:100%;max-width:1200px;margin:0 auto;padding:12px;overflow-x:hidden}
 
-  /* En-tête aux couleurs maritimes */
+  /* En-tête aux couleurs maritimes (hauteur réduite) */
   .header{
     background: linear-gradient(135deg, var(--marine) 0%, var(--ocean) 100%);
     border:1px solid var(--marine-fonce);
     border-radius:var(--radius);
     box-shadow:0 8px 24px rgba(30,58,95,.20);
-    padding:20px 16px;margin-bottom:18px;text-align:center;
+    padding:14px 16px;
+    margin-bottom:14px;
+    text-align:center;
     position:relative;
     overflow:hidden;
   }
-  /* Vague décorative en bas de l'en-tête */
   .header::after{
     content:'';
     position:absolute;left:0;right:0;bottom:-1px;height:24px;
     background: radial-gradient(ellipse at 50% 100%, transparent 60%, rgba(255,255,255,.08) 61%);
     pointer-events:none;
   }
+  /* Logo sans cadre blanc */
   .header .banner{
-    display:block;margin:0 auto 14px;
-    max-width:520px;width:100%;height:auto;
-    background:#ffffff;
-    padding:10px 20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.15);
+    display:block;
+    margin:0 auto 8px;
+    max-width:320px;
+    width:100%;
+    height:auto;
   }
   .header h1{
-    margin:0;font-size:18px;font-weight:700;line-height:1.3;
-    color:#ffffff;letter-spacing:-0.3px;
+    margin:0;
+    font-size:17px;
+    font-weight:700;
+    line-height:1.3;
+    color:#ffffff;
+    letter-spacing:-0.3px;
   }
   .header .subtitle{
-    margin:8px 0 0;font-size:14px;color:#b8d2e8;font-weight:500;
+    margin:6px 0 0;
+    font-size:13.5px;
+    color:#b8d2e8;
+    font-weight:500;
   }
   .header .updated{
-    margin-top:12px;font-size:12px;color:#d0e0ee;
-    display:inline-flex;align-items:center;gap:6px;
+    margin-top:10px;
+    font-size:12px;
+    color:#d0e0ee;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
     padding:4px 12px;
     background:rgba(255,255,255,.12);
     border-radius:20px;
     backdrop-filter:blur(4px);
   }
   .header .updated .dot{
-    display:inline-block;width:7px;height:7px;border-radius:50%;
+    display:inline-block;
+    width:7px;height:7px;border-radius:50%;
     background:var(--anis);
     box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
@@ -111,7 +124,6 @@
     position:relative;
     overflow:hidden;
   }
-  /* Barre colorée à gauche */
   .card::before{
     content:'';
     position:absolute;top:0;left:0;bottom:0;
@@ -130,17 +142,26 @@
   .card.unknown::before{background:var(--muted)}
 
   .card h3{
-    margin:0;font-size:15px;font-weight:600;
-    color:var(--marine);word-break:break-word;line-height:1.35;
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+    color:var(--marine);
+    word-break:break-word;
+    line-height:1.35;
   }
   .card .value{
-    font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;
-    letter-spacing:-1px;line-height:1.05;
+    font-size:34px;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:-1px;
+    line-height:1.05;
     color:var(--azur);
     transition:color .2s ease;
   }
   .card .bar{
-    width:100%;height:6px;background:var(--ecume-2);border-radius:3px;
+    width:100%;height:6px;
+    background:var(--ecume-2);
+    border-radius:3px;
     overflow:hidden;margin-top:2px;
   }
   .card .bar span{
@@ -163,8 +184,10 @@
     display:flex;align-items:center;justify-content:center;gap:12px;
   }
   .loading .spin{
-    width:22px;height:22px;border:2px solid var(--border);
-    border-top-color:var(--azur);border-radius:50%;
+    width:22px;height:22px;
+    border:2px solid var(--border);
+    border-top-color:var(--azur);
+    border-radius:50%;
     animation:spin .8s linear infinite;
   }
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -175,8 +198,10 @@
 
   /* Pied de page */
   footer.foot{
-    text-align:center;padding:32px 16px 20px;
-    font-size:12px;color:var(--muted);
+    text-align:center;
+    padding:28px 16px 20px;
+    font-size:12px;
+    color:var(--muted);
     line-height:1.6;
   }
   footer.foot .brand{
@@ -198,9 +223,7 @@
     from{opacity:0;transform:translateY(8px)}
     to{opacity:1;transform:translateY(0)}
   }
-  .card{
-    animation:fadeUp .35s ease backwards;
-  }
+  .card{animation:fadeUp .35s ease backwards}
   .card:nth-child(1){animation-delay:.02s}
   .card:nth-child(2){animation-delay:.04s}
   .card:nth-child(3){animation-delay:.06s}
@@ -216,15 +239,18 @@
   @media (min-width:600px){
     .wrap{padding:16px}
     .cards-grid{grid-template-columns:repeat(2,1fr);gap:14px}
-    .header{padding:28px 20px}
-    .header h1{font-size:22px}
-    .header .subtitle{font-size:15px}
+    .header{padding:16px 20px;margin-bottom:16px}
+    .header .banner{max-width:360px;margin-bottom:10px}
+    .header h1{font-size:20px}
+    .header .subtitle{font-size:14px}
   }
   @media (min-width:900px){
     .wrap{padding:24px}
     .cards-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-    .header{padding:36px 24px;margin-bottom:24px}
-    .header h1{font-size:26px}
+    .header{padding:18px 24px;margin-bottom:18px}
+    .header .banner{max-width:420px;margin-bottom:12px}
+    .header h1{font-size:22px}
+    .header .subtitle{font-size:14.5px}
     .card{padding:22px 22px}
     .card .value{font-size:38px}
   }
