@@ -3,39 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Taux de satisfaction — Lycée Maritime Boulogne</title>
+<title>Évaluation à chaud des formations fc — Lycée Maritime Boulogne</title>
 <link rel="icon" href="data:,">
 <style>
   :root{
-    /* Palette maritime */
-    --marine:#1e3a5f;
-    --marine-fonce:#152a45;
-    --ocean:#2c5a8c;
-    --azur:#4a90c4;
-    --azur-clair:#7fb3d9;
-    --anis:#a4c639;
-    --anis-fonce:#8aab2a;
-    --ecume:#f0f5fa;
-    --ecume-2:#e3edf5;
-
-    /* Couleurs fonctionnelles */
-    --bg:#f0f5fa;
-    --card:#ffffff;
-    --text:#1a2a3a;
-    --muted:#7a8fa6;
-    --border:#d8e3ed;
-    --radius:10px;              /* ← coins moins arrondis */
-    --radius-sm:6px;
+    --marine:#1e3a5f;--marine-fonce:#152a45;--ocean:#2c5a8c;
+    --azur:#4a90c4;--azur-clair:#7fb3d9;--anis:#a4c639;
+    --ecume:#f0f5fa;--ecume-2:#e3edf5;
+    --card:#ffffff;--text:#1a2a3a;--muted:#7a8fa6;--border:#d8e3ed;
+    --radius:10px;
     --shadow:0 1px 2px rgba(30,58,95,.06), 0 6px 16px rgba(30,58,95,.08);
     --shadow-hover:0 6px 12px rgba(30,58,95,.10), 0 16px 32px rgba(30,58,95,.12);
-
-    /* Niveaux de satisfaction */
-    --success:#5fa02c;
-    --success-2:#4a8a1f;
-    --warning:#e8a63c;
-    --warning-2:#c88a1c;
-    --danger:#c93e3e;
-    --danger-2:#a52f2f;
+    --success:#5fa02c;--success-2:#4a8a1f;
+    --warning:#e8a63c;--warning-2:#c88a1c;
+    --danger:#c93e3e;--danger-2:#a52f2f;
   }
   *{box-sizing:border-box}
   html, body {
@@ -49,14 +30,14 @@
   }
   .wrap{width:100%;max-width:1200px;margin:0 auto;padding:12px;overflow-x:hidden}
 
-  /* En-tête aux couleurs maritimes (compact) */
+  /* En-tête maritime compact */
   .header{
     background: linear-gradient(135deg, var(--marine) 0%, var(--ocean) 100%);
     border:1px solid var(--marine-fonce);
     border-radius:var(--radius);
     box-shadow:0 8px 24px rgba(30,58,95,.20);
-    padding:12px 16px;
-    margin-bottom:12px;
+    padding:14px 16px;
+    margin-bottom:16px;
     text-align:center;
     position:relative;
     overflow:hidden;
@@ -67,7 +48,6 @@
     background: radial-gradient(ellipse at 50% 100%, transparent 60%, rgba(255,255,255,.08) 61%);
     pointer-events:none;
   }
-  /* Logo sans cadre */
   .header .banner{
     display:block;
     margin:0 auto 6px;
@@ -90,7 +70,7 @@
     font-weight:500;
   }
   .header .updated{
-    margin-top:8px;
+    margin-top:10px;
     font-size:11.5px;
     color:#d0e0ee;
     display:inline-flex;
@@ -108,7 +88,7 @@
     box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
-  /* Grille */
+  /* Grille de cartes */
   .cards-grid{
     display:grid;grid-template-columns:1fr;gap:12px;
   }
@@ -197,20 +177,16 @@
     text-align:center;padding:50px 16px;color:var(--muted);font-size:14px;
   }
 
-  /* Pied de page (compact) */
+  /* Pied de page */
   footer.foot{
     text-align:center;
-    padding:16px 16px 12px;     /* ← réduit */
+    padding:24px 16px 16px;
     font-size:12px;
     color:var(--muted);
     line-height:1.4;
   }
-  footer.foot p{
-    margin:0;                   /* ← supprime les sauts de ligne par défaut */
-  }
-  footer.foot p + p{
-    margin-top:3px;             /* ← très petit espacement entre les 2 lignes */
-  }
+  footer.foot p{margin:0}
+  footer.foot p + p{margin-top:3px}
   footer.foot .brand{
     color:var(--marine);font-weight:600;letter-spacing:.3px;
   }
@@ -245,7 +221,7 @@
   @media (min-width:600px){
     .wrap{padding:16px}
     .cards-grid{grid-template-columns:repeat(2,1fr);gap:12px}
-    .header{padding:14px 20px;margin-bottom:14px}
+    .header{padding:16px 20px;margin-bottom:18px}
     .header .banner{max-width:220px;margin-bottom:8px}
     .header h1{font-size:18px}
     .header .subtitle{font-size:13.5px}
@@ -253,7 +229,7 @@
   @media (min-width:900px){
     .wrap{padding:20px}
     .cards-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-    .header{padding:16px 24px;margin-bottom:16px}
+    .header{padding:18px 24px;margin-bottom:20px}
     .header .banner{max-width:260px;margin-bottom:8px}
     .header h1{font-size:20px}
     .header .subtitle{font-size:14px}
@@ -269,8 +245,8 @@
     <img class="banner"
       src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg"
       alt="Lycée Maritime Boulogne">
-    <h1>Lycée Professionnel Maritime Boulogne - Le Portel</h1>
-    <p class="subtitle">Taux de satisfaction par formation</p>
+    <h1>Évaluation à chaud des formations fc</h1>
+    <p class="subtitle">Lycée Professionnel Maritime Boulogne - Le Portel</p>
     <div class="updated" id="updated" style="display:none">
       <span class="dot"></span>
       <span>Données mises à jour le <span id="updated-date">…</span></span>
