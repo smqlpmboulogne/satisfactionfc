@@ -57,7 +57,6 @@
   }
   .card .bar{width:100%;height:6px;background:#eef1f6;border-radius:3px;overflow:hidden}
   .card .bar span{display:block;height:100%;border-radius:3px;transition:width .4s ease}
-  .card .reponses{font-size:12px;color:#98a2b3}
 
   .card.high .value{color:var(--success)}
   .card.high .bar span{background:var(--success)}
@@ -165,8 +164,6 @@
     const s = String(v).trim().replace('%','').replace(',','.');
     const n = parseFloat(s);
     if (isNaN(n)) return null;
-    // Si c'est déjà en pourcentage (0-100), on garde
-    // Si c'est en décimal (0-1), on multiplie par 100
     return n <= 1 ? n * 100 : n;
   }
 
@@ -178,7 +175,7 @@
   }
 
   /* ============================================================
-     2) RENDU
+     2) RENDU — sans le nombre de réponses
      ============================================================ */
   function render(rows){
     if (!rows.length){
@@ -192,12 +189,14 @@
       const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
       const bar = r.satisfaction != null
         ? '<div class="bar"><span style="width:'+pct+'%"></span></div>' : '';
-      const aff = r.satisfaction != null ? r.satisfaction.toFixed(1).replace('.',',') + ' %' : '—';
-      const rep = r.reponses != null ? '<div class="reponses">'+r.reponses+' réponse'+(r.reponses > 1 ? 's' : '')+'</div>' : '';
+      const aff = r.satisfaction != null
+        ? r.satisfaction.toFixed(1).replace('.',',') + ' %'
+        : '—';
+
       return '<div class="card '+lvl+'">' +
                '<h3>'+esc(r.name)+'</h3>' +
                '<div class="value">'+aff+'</div>' +
-               bar + rep +
+               bar +
              '</div>';
     }).join('');
 
@@ -236,12 +235,10 @@
 
       const headers = rows[0].map(h => h.trim());
 
-      // Trouver l'index des 4 indicateurs
       const idxRep = headers.findIndex(h => /réponse aux attentes/i.test(h));
       const idxObj = headers.findIndex(h => /atteinte des objectifs/i.test(h));
       const idxUti = headers.findIndex(h => /utilisation compétences/i.test(h));
       const idxQua = headers.findIndex(h => /qualité.*animation/i.test(h));
-      const idxReponses = headers.findIndex(h => /^réponses?$/i.test(h));
 
       const data = rows.slice(1)
         .filter(r => r[0] && r[0].trim() !== '')
@@ -258,11 +255,7 @@
             ? vals.reduce((a,b) => a+b, 0) / vals.length
             : null;
 
-          const reponses = idxReponses >= 0
-            ? parseInt(r[idxReponses], 10) || null
-            : null;
-
-          return { name, satisfaction, reponses };
+          return { name, satisfaction };
         })
         .filter(r => r.satisfaction != null)
         .sort((a, b) => b.satisfaction - a.satisfaction);
