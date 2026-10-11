@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Télécharger le CSV RESULTATS
         run: |
@@ -30,7 +32,7 @@ jobs:
           date -u +"%Y-%m-%dT%H:%M:%SZ" > last-update.txt
           echo "Date enregistrée : $(cat last-update.txt)"
 
-      - name: Commit et push
+      - name: Commit et push (avec pull préalable)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -39,5 +41,6 @@ jobs:
             echo "Aucun changement à commiter"
           else
             git commit -m "Mise à jour automatique des CSV et de la date"
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
