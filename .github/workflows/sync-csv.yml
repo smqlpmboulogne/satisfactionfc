@@ -35,6 +35,11 @@ jobs:
           curl -L -o synthese.csv \
             "https://docs.google.com/spreadsheets/d/e/2PACX-1vQw8FcM4nLQtrdOgIDSlimdJ11UBuQ6MrBu3BmxNIUn54Jdk9somZAsPn4pB8kvGKhS0_g9yC4C0VeO/pub?gid=1317312539&single=true&output=csv"
 
+      - name: Télécharger le CSV SYNTHESE_DATE
+        run: |
+          curl -L -o synthese-date.csv \
+            "https://docs.google.com/spreadsheets/d/e/2PACX-1vQw8FcM4nLQtrdOgIDSlimdJ11UBuQ6MrBu3BmxNIUn54Jdk9somZAsPn4pB8kvGKhS0_g9yC4C0VeO/pub?gid=392034765&single=true&output=csv"
+
       - name: Écrire la date de mise à jour
         run: |
           date -u +"%Y-%m-%dT%H:%M:%SZ" > last-update.txt
@@ -43,7 +48,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add formations.csv suggestions.csv refus.csv synthese.csv last-update.txt
+          git add formations.csv suggestions.csv refus.csv synthese.csv synthese-date.csv last-update.txt
           if git diff --cached --quiet; then
             echo "Aucun changement à commiter"
           else
