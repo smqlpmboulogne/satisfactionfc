@@ -1,12 +1,36 @@
 Formation,Nombre de remarques,Synthèse
-CAEERS Initial,2,"Erreur : Erreur API 429 : {
-  ""error"": {
-    ""code"": 429,
-    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
-CFBS,1,"Les stagiaires expriment leur satisfaction concernant la qualité de l'accueil ainsi que la sympathie des formateurs.
+CAEERS Initial,2,"Points positifs :
+Aucun point positif n'a été exprimé dans les retours exploitables.
 
-Des axes d'amélioration sont"
-CGO,2,"Erreur : Erreur API 429 : {
-  ""error"": {
-    ""code"": 429,
-    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+Axes d'amélioration :
+Les commentaires transmis ne fournissent pas d'éléments exploitables pour dégager des axes d'amélioration constructifs.
+
+Constats qualité :
+Les commentaires recueillis ne contiennent pas d'informations suffisamment exploitables pour réaliser une analyse qualitative.
+
+Actions conseillées :
+Poursuivre la collecte des évaluations en encourageant des retours plus détaillés."
+CFBS,1,"Points positifs :
+Un stagiaire souligne la qualité de l'accueil et la sympathie de l'intervenant.
+
+Axes d'amélioration :
+Un retour signale la nécessité de renouveler le matériel d'entraînement défectueux et de résoudre un problème de chauffage. Il est également demandé d'augmenter la part des travaux pratiques par rapport aux devoirs.
+
+Constats qualité :
+Un stagiaire exprime sa satisfaction globale sur le relationnel et l'accueil, mais remonte la présence de combinaisons hors service, un manque de confort thermique dans les salles et un souhait de rééquilibrage pédagogique au profit de la pratique.
+
+Actions conseillées :
+Remplacer le matériel d'entraînement hors service, notamment les combinaisons.
+Vérifier le fonctionnement du système de chauffage dans les salles de formation.
+Adapter la répartition pédagogique en augmentant le temps consacré aux travaux pratiques."
+CGO,2,"Points positifs :
+Aucun point positif n'a été exprimé dans les retours exploitables.
+
+Axes d'amélioration :
+Les commentaires ne contiennent aucun élément explicite permettant de définir des axes d'amélioration.
+
+Constats qualité :
+Les commentaires recueillis ne contiennent pas d'informations suffisamment exploitables pour réaliser une analyse qualitative.
+
+Actions conseillées :
+Poursuivre la collecte des évaluations en encourageant des retours plus détaillés."
