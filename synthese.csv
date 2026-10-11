@@ -1,11 +1,9 @@
-Formation,Nombre de remarques,Points positifs,Axes d'amélioration,Recommandations / Pistes d'action
-CAEERS Initial,2,"Erreur : Erreur API 503 : {
+Formation,Nombre de remarques,Synthèse
+CAEERS Initial,2,Aucun point positif ni aspect apprécié n'a été mentionné par les stagiaires dans les retours rédigés pour cette session.
+CFBS,1,"Les stagiaires ont exprimé leur satisfaction concernant la qualité de l'accueil ainsi que la sympathie des formateurs.
+
+Les"
+CGO,2,"Erreur : Erreur API 429 : {
   ""error"": {
-    ""code"": 503,
-    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
-    ""status"": ""UNAVAILABLE""
-  }
-}
-",,
-CFBS,1,Bon accueil et formateurs sympathiques.,"Nécessité d'augmenter la part de travaux pratiques par rapport aux devoirs, combinaisons de protection hors service, et température trop basse dans les salles.","Remplacer les combinaisons défectueuses, contrôler le chauffage des salles de cours et rééquilibrer le programme pédagogique au profit des travaux pratiques."
-CGO,2,Aucun point positif mentionné,Aucun axe d'amélioration mentionné,Aucune action particulière
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
