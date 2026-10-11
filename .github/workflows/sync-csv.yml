@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Télécharger le CSV RESULTATS
         run: |
@@ -27,16 +25,21 @@ jobs:
           curl -L -o suggestions.csv \
             "https://docs.google.com/spreadsheets/d/e/2PACX-1vQw8FcM4nLQtrdOgIDSlimdJ11UBuQ6MrBu3BmxNIUn54Jdk9somZAsPn4pB8kvGKhS0_g9yC4C0VeO/pub?gid=1774868000&single=true&output=csv"
 
+      - name: Télécharger le CSV REFUS
+        run: |
+          curl -L -o refus.csv \
+            "https://docs.google.com/spreadsheets/d/e/2PACX-1vQw8FcM4nLQtrdOgIDSlimdJ11UBuQ6MrBu3BmxNIUn54Jdk9somZAsPn4pB8kvGKhS0_g9yC4C0VeO/pub?gid=252414659&single=true&output=csv"
+
       - name: Écrire la date de mise à jour
         run: |
           date -u +"%Y-%m-%dT%H:%M:%SZ" > last-update.txt
           echo "Date enregistrée : $(cat last-update.txt)"
 
-      - name: Commit et push (avec pull préalable)
+      - name: Commit et push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add formations.csv suggestions.csv last-update.txt
+          git add formations.csv suggestions.csv refus.csv last-update.txt
           if git diff --cached --quiet; then
             echo "Aucun changement à commiter"
           else
