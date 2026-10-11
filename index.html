@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lycée Professionnel Maritime Boulogne - Le Portel</title>
+<title>Taux de satisfaction — Lycée Maritime Boulogne</title>
 <link rel="icon" href="data:,">
 <style>
   :root{
@@ -20,7 +20,7 @@
     -webkit-font-smoothing:antialiased;
     width:100%; max-width:100%; overflow-x:hidden;
   }
-  .wrap{width:100%;max-width:1400px;margin:0 auto;padding:12px;overflow-x:hidden}
+  .wrap{width:100%;max-width:1200px;margin:0 auto;padding:12px;overflow-x:hidden}
 
   .header{
     background:var(--card);border:1px solid var(--border);
@@ -39,40 +39,9 @@
     background:var(--success);
   }
 
-  .tabs{
-    display:flex;gap:4px;margin-bottom:16px;
-    background:var(--card);border:1px solid var(--border);
-    border-radius:12px;padding:4px;box-shadow:var(--shadow);
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
+  .cards-grid{
+    display:grid;grid-template-columns:1fr;gap:12px;
   }
-  .tab{
-    flex:1 1 auto;min-width:max-content;
-    padding:10px 16px;border:none;background:transparent;
-    font-size:14px;font-weight:600;color:#667085;
-    border-radius:8px;cursor:pointer;white-space:nowrap;
-    transition:background .15s,color .15s;
-  }
-  .tab:hover{background:#f0f4f9;color:#1f2430}
-  .tab.active{background:var(--accent);color:#fff}
-  body.layout-mobile .tab{font-size:15px;padding:12px 14px}
-
-  .panel{display:none}
-  .panel.active{display:block}
-
-  .sortbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
-  .sortbar label{font-size:13px;color:#475467;font-weight:500}
-  .sortbar select{
-    padding:8px 10px;border:1px solid var(--border);border-radius:8px;
-    background:var(--card);font-size:14px;color:var(--text);
-    outline:none;cursor:pointer;max-width:100%;flex:1 1 160px;
-  }
-  .sortbar .dir{
-    padding:8px 10px;border:1px solid var(--border);border-radius:8px;
-    background:var(--card);font-size:13px;cursor:pointer;white-space:nowrap;
-  }
-
-  .cards, .table-wrap { display:block; }
-  .cards-grid{display:grid;grid-template-columns:1fr;gap:12px}
 
   .card{
     background:var(--card);border:1px solid var(--border);
@@ -83,11 +52,12 @@
   .card:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(16,24,40,.08),0 12px 28px rgba(16,24,40,.10)}
   .card h3{margin:0;font-size:15px;font-weight:600;color:#344054;word-break:break-word}
   .card .value{
-    font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;
+    font-size:32px;font-weight:700;font-variant-numeric:tabular-nums;
     letter-spacing:-0.5px;line-height:1.1;
   }
   .card .bar{width:100%;height:6px;background:#eef1f6;border-radius:3px;overflow:hidden}
   .card .bar span{display:block;height:100%;border-radius:3px;transition:width .4s ease}
+  .card .reponses{font-size:12px;color:#98a2b3}
 
   .card.high .value{color:var(--success)}
   .card.high .bar span{background:var(--success)}
@@ -96,42 +66,6 @@
   .card.low .value{color:var(--danger)}
   .card.low .bar span{background:var(--danger)}
   .card.unknown .value{color:var(--muted);font-weight:500}
-
-  .card.detail h3{color:var(--accent);margin-bottom:8px;font-size:16px}
-  .card.detail .row{
-    display:grid;grid-template-columns:1fr auto;align-items:center;
-    gap:12px;padding:8px 0;border-bottom:1px dashed var(--border);
-    font-size:14px;
-  }
-  .card.detail .row:last-child{border-bottom:none}
-  .card.detail .row .k{color:#475467;font-size:13.5px;min-width:0;word-break:break-word}
-  .card.detail .row .v{
-    text-align:right;font-weight:700;color:var(--accent);
-    font-variant-numeric:tabular-nums;white-space:nowrap;font-size:15px;
-  }
-  .card.detail .row .v.empty{color:var(--muted);font-weight:500}
-
-  .table-wrap{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);box-shadow:var(--shadow);
-    overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;
-  }
-  table{width:100%;border-collapse:collapse;font-size:14px;min-width:0}
-  thead th{
-    position:sticky;top:0;background:var(--accent);color:#fff;
-    text-align:left;padding:10px 12px;font-weight:600;
-    white-space:nowrap;cursor:pointer;user-select:none;
-  }
-  thead th:hover{background:#1558b0}
-  thead th:not(:first-child){text-align:right}
-  thead th .arrow{display:inline-block;margin-left:6px;opacity:.4;font-size:11px}
-  thead th.sorted .arrow{opacity:1}
-  tbody td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:top;word-break:break-word}
-  tbody td:first-child{font-weight:600;color:#344054}
-  tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
-  tbody td.empty{color:var(--muted);font-weight:400}
-  tbody tr:nth-child(even){background:#fafbfd}
-  tbody tr:hover{background:#eef4ff}
 
   .loading{
     text-align:center;padding:40px 16px;color:var(--muted);font-size:15px;
@@ -152,42 +86,18 @@
   }
 
   /* RESPONSIVE */
-  body.layout-mobile .wrap{padding:14px}
-  body.layout-mobile .header{padding:18px 16px;margin-bottom:16px}
-  body.layout-mobile .header h1{font-size:22px}
-  body.layout-mobile .header .subtitle{font-size:15px;margin-top:8px}
-  body.layout-mobile .sortbar{gap:10px;margin-bottom:16px}
-  body.layout-mobile .sortbar label{font-size:15px}
-  body.layout-mobile .sortbar select{font-size:16px;padding:10px 12px}
-  body.layout-mobile .sortbar .dir{font-size:15px;padding:10px 12px}
-  body.layout-mobile #panel-full .table-wrap{display:none}
-  body.layout-mobile #panel-full .cards{display:block}
-  body.layout-mobile .card{padding:16px 18px}
-  body.layout-mobile .card .value{font-size:32px}
-  body.layout-mobile .card.detail .row{grid-template-columns:1fr auto;gap:14px;padding:12px 0}
-  body.layout-mobile .card.detail .row .k{font-size:14.5px;line-height:1.35}
-  body.layout-mobile .card.detail .row .v{font-size:16px}
-
-  body.layout-tablet .wrap{padding:16px}
-  body.layout-tablet .header{padding:22px 18px}
-  body.layout-tablet .header h1{font-size:24px}
-  body.layout-tablet .header .subtitle{font-size:15px}
-  body.layout-tablet .cards-grid{grid-template-columns:repeat(2,1fr);gap:14px}
-  body.layout-tablet #panel-full .table-wrap{display:none}
-  body.layout-tablet #panel-full .cards{display:block}
-
-  body.layout-desktop .wrap{padding:20px}
-  body.layout-desktop .header{padding:28px 24px}
-  body.layout-desktop .header h1{font-size:24px}
-  body.layout-desktop .header .subtitle{font-size:15px}
-  body.layout-desktop .sortbar{display:none}
-
-  body.layout-desktop #panel-sat .cards-grid{
-    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
-    gap:16px;
+  @media (min-width:600px){
+    .wrap{padding:16px}
+    .cards-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+    .header{padding:22px 18px}
+    .header h1{font-size:22px}
   }
-  body.layout-desktop #panel-full .cards{display:none}
-  body.layout-desktop #panel-full .table-wrap{display:block}
+  @media (min-width:900px){
+    .wrap{padding:20px}
+    .cards-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+    .header{padding:28px 24px}
+    .header h1{font-size:24px}
+  }
 </style>
 </head>
 <body>
@@ -195,102 +105,39 @@
 <div class="wrap">
   <header class="header">
     <img class="banner"
-      src="logolpmbl.jpg"
+      src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg"
       alt="Lycée Maritime Boulogne">
     <h1>Lycée Professionnel Maritime Boulogne - Le Portel</h1>
-    <p class="subtitle">Formations FC — Évaluation à chaud des formations</p>
+    <p class="subtitle">Taux de satisfaction par formation</p>
     <div class="updated" id="updated" style="display:none">
       <span class="dot"></span>
       <span>Données mises à jour le <span id="updated-date">…</span></span>
     </div>
   </header>
 
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-tab="sat" role="tab">Taux de satisfaction</button>
-    <button class="tab" data-tab="full" role="tab">Évaluation complète</button>
+  <div class="loading" id="loading">
+    <div class="spin"></div>
+    <div>Chargement des données…</div>
   </div>
 
-  <div class="panel active" id="panel-sat">
-    <div class="loading" id="loading1">
-      <div class="spin"></div>
-      <div>Chargement des taux de satisfaction…</div>
-    </div>
-    <div class="cards" id="cards1" style="display:none">
-      <div class="cards-grid" id="grid1"></div>
-    </div>
-    <div class="empty-msg" id="empty1" style="display:none">Aucune donnée de satisfaction disponible</div>
-  </div>
-
-  <div class="panel" id="panel-full">
-    <div class="sortbar" id="sortbar2" style="display:none">
-      <label for="sortSelect2">Trier par :</label>
-      <select id="sortSelect2"></select>
-      <button class="dir" id="sortDir2" type="button">▲ Croissant</button>
-    </div>
-    <div class="loading" id="loading2">
-      <div class="spin"></div>
-      <div>Chargement du détail…</div>
-    </div>
-    <div class="cards" id="cards2" style="display:none"></div>
-    <div class="table-wrap" id="tableWrap2" style="display:none">
-      <table id="table2"></table>
-    </div>
-    <div class="empty-msg" id="empty2" style="display:none">Aucune donnée détaillée disponible</div>
-  </div>
+  <div class="cards-grid" id="grid" style="display:none"></div>
+  <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
 
   <footer class="foot">
-    Source : EVALUATION_A_CHAUD_DES_FORMATIONS (Google Sheets) — synchronisation automatique - ZEG.
+    Source : Google Sheets — synchronisation automatique.
   </footer>
 </div>
 
 <script>
   /* ============================================================
-     1) LAYOUT
-     ============================================================ */
-  function applyLayout(){
-    var w = Math.min(window.innerWidth||9999, document.documentElement.clientWidth||9999, screen.width||9999);
-    var prev = document.body.classList.contains('layout-mobile') ? 'mobile'
-             : document.body.classList.contains('layout-tablet') ? 'tablet'
-             : document.body.classList.contains('layout-desktop') ? 'desktop' : '';
-    document.body.classList.remove('layout-mobile','layout-tablet','layout-desktop');
-    var next = w < 700 ? 'mobile' : w < 1000 ? 'tablet' : 'desktop';
-    document.body.classList.add('layout-' + next);
-
-    if (prev && prev !== next){
-      if (window.DATA2 && DATA2.rows && DATA2.rows.length) renderComplet();
-      if (window.DATA_SAT && DATA_SAT.length) renderSatisfaction(DATA_SAT);
-    }
-  }
-  applyLayout();
-  window.addEventListener('resize', applyLayout);
-  window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
-  setTimeout(applyLayout, 300);
-  setTimeout(applyLayout, 1000);
-
-  /* ============================================================
-     2) CONFIGURATION
-     ============================================================ */
-  const CSV_FILE = 'formations.csv';
-  const DATE_FILE = 'last-update.txt';
-
-  /* ============================================================
-     3) UTILITAIRES
+     1) UTILITAIRES
      ============================================================ */
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     }[c]));
   }
-  function level(n){
-    if (n == null) return 'unknown';
-    if (n >= 75) return 'high';
-    if (n >= 50) return 'mid';
-    return 'low';
-  }
 
-  /* ============================================================
-     4) PARSING CSV
-     ============================================================ */
   function parseCSV(text){
     const rows = [];
     let cur = [], field = '', inQuotes = false;
@@ -313,295 +160,125 @@
     return rows.filter(r => r.some(c => c.trim() !== ''));
   }
 
-  /* ============================================================
-     5) TRANSFORMATION CSV → DONNÉES
-     ============================================================ */
-  const FORMATION_NAMES = {
-    "CMP":"Certificat Matelot Pont","Meca750":"Mécanicien 750 Kw","Meca250":"Mécanicien 250 Kw",
-    "C200":"Capitaine 200","RecyCap2000":"Recyclage Capitaine 200","ModPeche":"Module Pêche",
-    "CAEERSini":"CAEERS Initial","RecyCAEERS":"Recyclage CAEERS","CFBS":"CFBS","RecyCFBS":"Recyclage CFBS",
-    "CSS":"CSS","RecyMed1":"Recyclage Médical 1","CRO":"CRO","CGO":"CGO","RecyCRO":"Recyclage CRO",
-    "RecyCGO":"Recyclage CGO","Med2":"Médical 2","RecyMed2":"Recyclage Médical 2",
-    "NavPaxNOff":"NavPax Non Officier","NavPaxOff":"NavPax Officier","C500":"Capitaine 500"
-  };
+  function toPercent(v){
+    if (!v) return null;
+    const s = String(v).trim().replace('%','').replace(',','.');
+    const n = parseFloat(s);
+    if (isNaN(n)) return null;
+    // Si c'est déjà en pourcentage (0-100), on garde
+    // Si c'est en décimal (0-1), on multiplie par 100
+    return n <= 1 ? n * 100 : n;
+  }
 
-  const isError = v => /^#(DIV\/0!|N\/A|VALUE!|REF!|NAME\?|NUM!|NULL!)/i.test(v);
-
-  function csvToData(rows){
-    if (!rows || rows.length < 2) return { satisfaction: [], complet: { indicators: [], rows: [] } };
-
-    const headers = rows[0].map(h => h.trim());
-    const indicators = headers.slice(1);
-
-    let satIdx = headers.findIndex(h => /satisfaction/i.test(h));
-    if (satIdx === -1) satIdx = headers.length - 1;
-
-    const completRows = rows.slice(1)
-      .filter(r => r[0] && r[0].trim() !== '')
-      .map(r => {
-        const code = r[0].trim();
-        const name = FORMATION_NAMES[code] || code;
-        const cells = indicators.map((_, i) => {
-          const raw = (r[i+1] || '').trim();
-          const bad = raw === '' || isError(raw);
-          let num = null;
-          if (!bad){
-            const cleaned = raw.replace(/[%\s]/g,'').replace(',','.');
-            const n = parseFloat(cleaned);
-            if (!isNaN(n)) num = n;
-          }
-          return { value: bad ? '—' : raw, empty: bad, num };
-        });
-        return { code, name, cells, hasAnyValue: cells.some(c => !c.empty) };
-      });
-
-    const satisfaction = completRows
-      .map(r => {
-        const c = r.cells[satIdx - 1];
-        return {
-          code: r.code,
-          name: r.name,
-          value: c ? c.value : '—',
-          numeric: c ? c.num : null,
-          hasValue: c && !c.empty
-        };
-      })
-      .filter(d => d.hasValue)
-      .sort((a, b) => (b.numeric ?? -1) - (a.numeric ?? -1));
-
-    return {
-      satisfaction,
-      complet: { indicators, rows: completRows }
-    };
+  function level(n){
+    if (n == null) return 'unknown';
+    if (n >= 75) return 'high';
+    if (n >= 50) return 'mid';
+    return 'low';
   }
 
   /* ============================================================
-     6) RENDU — Satisfaction
+     2) RENDU
      ============================================================ */
-  let DATA_SAT = [];
-  function renderSatisfaction(rows){
-    DATA_SAT = rows || [];
-    const $loading = document.getElementById('loading1');
-    const $cards   = document.getElementById('cards1');
-    const $grid    = document.getElementById('grid1');
-    const $empty   = document.getElementById('empty1');
-
-    if (!Array.isArray(rows) || !rows.length){
-      $loading.style.display = 'none';
-      $empty.style.display = 'block';
+  function render(rows){
+    if (!rows.length){
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('empty').style.display = 'block';
       return;
     }
-    $grid.innerHTML = rows.map(d => {
-      const lvl = level(d.numeric);
-      const pct = d.numeric != null ? Math.max(0, Math.min(100, d.numeric)) : 0;
-      const bar = d.numeric != null ? '<div class="bar"><span style="width:'+pct+'%"></span></div>' : '';
+
+    document.getElementById('grid').innerHTML = rows.map(r => {
+      const lvl = level(r.satisfaction);
+      const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
+      const bar = r.satisfaction != null
+        ? '<div class="bar"><span style="width:'+pct+'%"></span></div>' : '';
+      const aff = r.satisfaction != null ? r.satisfaction.toFixed(1).replace('.',',') + ' %' : '—';
+      const rep = r.reponses != null ? '<div class="reponses">'+r.reponses+' réponse'+(r.reponses > 1 ? 's' : '')+'</div>' : '';
       return '<div class="card '+lvl+'">' +
-               '<h3>'+esc(d.name || d.code || '')+'</h3>' +
-               '<div class="value">'+esc(d.value || '—')+'</div>' +
-               bar +
+               '<h3>'+esc(r.name)+'</h3>' +
+               '<div class="value">'+aff+'</div>' +
+               bar + rep +
              '</div>';
     }).join('');
-    $loading.style.display = 'none';
-    $cards.style.display = 'block';
-    $empty.style.display = 'none';
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('grid').style.display = 'grid';
+    document.getElementById('empty').style.display = 'none';
   }
 
   /* ============================================================
-     7) RENDU — Détail complet
-     ============================================================ */
-  let DATA2 = { indicators: [], rows: [] };
-  window.DATA2 = DATA2;
-  let sortKey2 = 'name';
-  let sortAsc2 = true;
-
-  function getValue2(row, key){
-    if (key === 'name') return row.name.toLowerCase();
-    const i = parseInt(key.replace('col',''), 10);
-    const c = row.cells[i];
-    if (c.empty) return null;
-    return c.num != null ? c.num : c.value.toLowerCase();
-  }
-  function sortRows2(rows){
-    return rows.slice().sort((a, b) => {
-      const va = getValue2(a, sortKey2), vb = getValue2(b, sortKey2);
-      if (va === null && vb === null) return 0;
-      if (va === null) return 1;
-      if (vb === null) return -1;
-      if (typeof va === 'number' && typeof vb === 'number'){
-        return sortAsc2 ? va - vb : vb - va;
-      }
-      const sa = String(va), sb = String(vb);
-      return sortAsc2 ? sa.localeCompare(sb,'fr') : sb.localeCompare(sa,'fr');
-    });
-  }
-
-  function renderComplet(){
-    const $loading   = document.getElementById('loading2');
-    const $cards     = document.getElementById('cards2');
-    const $table     = document.getElementById('table2');
-    const $tableWrap = document.getElementById('tableWrap2');
-    const $empty     = document.getElementById('empty2');
-    const $sortbar   = document.getElementById('sortbar2');
-
-    if (!DATA2.rows || !DATA2.rows.length){
-      $loading.style.display = 'none';
-      $empty.style.display = 'block';
-      return;
-    }
-    const rows = sortRows2(DATA2.rows);
-
-    const thead = '<thead><tr>' +
-      '<th data-key="name" class="'+(sortKey2==='name'?'sorted':'')+'">Formation' +
-      '<span class="arrow">'+(sortKey2==='name'?(sortAsc2?'▲':'▼'):'▲')+'</span></th>' +
-      DATA2.indicators.map((h, i) => {
-        const k = 'col'+i;
-        const cls = sortKey2===k ? 'sorted' : '';
-        const arr = sortKey2===k ? (sortAsc2?'▲':'▼') : '▲';
-        return '<th data-key="'+k+'" class="'+cls+'">'+esc(h)+
-               '<span class="arrow">'+arr+'</span></th>';
-      }).join('') + '</tr></thead>';
-
-    const tbody = '<tbody>' + rows.map(r =>
-      '<tr><td>'+esc(r.name)+'</td>' +
-      r.cells.map(c => '<td class="'+(c.empty?'empty':'')+'">'+esc(c.value)+'</td>').join('') +
-      '</tr>'
-    ).join('') + '</tbody>';
-
-    $table.innerHTML = thead + tbody;
-
-    $cards.innerHTML = rows.map(r => {
-      const items = DATA2.indicators.map((label, i) => {
-        const c = r.cells[i];
-        return '<div class="row"><span class="k">'+esc(label)+'</span>' +
-               '<span class="v'+(c.empty?' empty':'')+'">'+esc(c.value)+'</span></div>';
-      }).join('');
-      return '<div class="card detail"><h3>'+esc(r.name)+'</h3>'+items+'</div>';
-    }).join('');
-
-    $table.querySelectorAll('thead th').forEach(th => {
-      th.addEventListener('click', () => {
-        const k = th.dataset.key;
-        if (k === sortKey2) sortAsc2 = !sortAsc2;
-        else { sortKey2 = k; sortAsc2 = true; }
-        renderComplet();
-      });
-    });
-
-    const isDesk = document.body.classList.contains('layout-desktop');
-    $loading.style.display = 'none';
-    $empty.style.display = 'none';
-    $sortbar.style.display = isDesk ? 'none' : 'flex';
-    $tableWrap.style.display = isDesk ? 'block' : 'none';
-    $cards.style.display = isDesk ? 'none' : 'block';
-  }
-
-  function initSortBar2(){
-    const $select = document.getElementById('sortSelect2');
-    const $dirBtn = document.getElementById('sortDir2');
-    if (!$select) return;
-    $select.innerHTML = '';
-    const cols = [{ key: 'name', label: 'Formation' },
-      ...DATA2.indicators.map((h, i) => ({ key: 'col'+i, label: h }))];
-    cols.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.key;
-      opt.textContent = c.label;
-      $select.appendChild(opt);
-    });
-    $select.value = sortKey2;
-
-    if (!$select.dataset.bound){
-      $select.addEventListener('change', () => {
-        sortKey2 = $select.value;
-        sortAsc2 = true;
-        renderComplet();
-      });
-      $select.dataset.bound = '1';
-    }
-    if ($dirBtn && !$dirBtn.dataset.bound){
-      $dirBtn.addEventListener('click', () => {
-        sortAsc2 = !sortAsc2;
-        renderComplet();
-      });
-      $dirBtn.dataset.bound = '1';
-    }
-    if ($dirBtn) $dirBtn.textContent = sortAsc2 ? '▲ Croissant' : '▼ Décroissant';
-  }
-
-  /* ============================================================
-     8) ONGLETS
-     ============================================================ */
-  document.querySelectorAll('.tab').forEach(t => {
-    t.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
-      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + t.dataset.tab));
-      setTimeout(() => {
-        const isDesk = document.body.classList.contains('layout-desktop');
-        const $tw = document.getElementById('tableWrap2');
-        const $c2 = document.getElementById('cards2');
-        if ($tw) $tw.style.display = isDesk ? 'block' : 'none';
-        if ($c2) $c2.style.display = isDesk ? 'none' : 'block';
-      }, 50);
-    });
-  });
-
-  /* ============================================================
-     9) DATE DE MISE À JOUR
+     3) DATE
      ============================================================ */
   async function chargerDate(){
     try {
-      const r = await fetch(DATE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
+      const r = await fetch('last-update.txt?t=' + Date.now(), { cache: 'no-store' });
       if (!r.ok) return;
       const txt = (await r.text()).trim();
-      if (!txt) return;
       const d = new Date(txt);
       if (isNaN(d)) return;
       const opts = { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' };
       document.getElementById('updated-date').textContent = d.toLocaleString('fr-FR', opts);
       document.getElementById('updated').style.display = 'inline-flex';
-    } catch(e){
-      console.warn("Date non disponible:", e);
-    }
+    } catch(e){}
   }
 
   /* ============================================================
-     10) CHARGEMENT
+     4) CHARGEMENT
      ============================================================ */
   async function chargerTout(){
     try {
-      const url = CSV_FILE + '?t=' + Math.floor(Date.now() / (5 * 60 * 1000));
-      const response = await fetch(url, { cache: 'no-store' });
+      const response = await fetch('formations.csv?t=' + Date.now(), { cache: 'no-store' });
       if (!response.ok) throw new Error('Erreur ' + response.status);
       const csv = await response.text();
       const rows = parseCSV(csv);
-      const data = csvToData(rows);
 
-      renderSatisfaction(data.satisfaction || []);
-      if (data.complet && data.complet.rows && data.complet.rows.length){
-        DATA2 = data.complet;
-        window.DATA2 = DATA2;
-        initSortBar2();
-        renderComplet();
-      } else {
-        document.getElementById('loading2').style.display = 'none';
-        document.getElementById('empty2').style.display = 'block';
-      }
-      console.log("CSV OK —",
-        (data.satisfaction||[]).length, "satisfactions,",
-        (data.complet && data.complet.rows || []).length, "lignes détail");
+      if (rows.length < 2) throw new Error('CSV vide');
+
+      const headers = rows[0].map(h => h.trim());
+
+      // Trouver l'index des 4 indicateurs
+      const idxRep = headers.findIndex(h => /réponse aux attentes/i.test(h));
+      const idxObj = headers.findIndex(h => /atteinte des objectifs/i.test(h));
+      const idxUti = headers.findIndex(h => /utilisation compétences/i.test(h));
+      const idxQua = headers.findIndex(h => /qualité.*animation/i.test(h));
+      const idxReponses = headers.findIndex(h => /^réponses?$/i.test(h));
+
+      const data = rows.slice(1)
+        .filter(r => r[0] && r[0].trim() !== '')
+        .map(r => {
+          const name = r[0].trim();
+          const vals = [
+            idxRep >= 0 ? toPercent(r[idxRep]) : null,
+            idxObj >= 0 ? toPercent(r[idxObj]) : null,
+            idxUti >= 0 ? toPercent(r[idxUti]) : null,
+            idxQua >= 0 ? toPercent(r[idxQua]) : null
+          ].filter(v => v != null);
+
+          const satisfaction = vals.length
+            ? vals.reduce((a,b) => a+b, 0) / vals.length
+            : null;
+
+          const reponses = idxReponses >= 0
+            ? parseInt(r[idxReponses], 10) || null
+            : null;
+
+          return { name, satisfaction, reponses };
+        })
+        .filter(r => r.satisfaction != null)
+        .sort((a, b) => b.satisfaction - a.satisfaction);
+
+      render(data);
+      chargerDate();
+
     } catch (e) {
       console.error("Erreur chargement:", e);
-      document.getElementById('loading1').style.display = 'none';
-      document.getElementById('loading2').style.display = 'none';
-      document.getElementById('empty1').textContent = "Impossible de charger : " + e.message;
-      document.getElementById('empty1').style.display = 'block';
-      document.getElementById('empty2').textContent = "Impossible de charger : " + e.message;
-      document.getElementById('empty2').style.display = 'block';
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('empty').textContent = "Impossible de charger les données : " + e.message;
+      document.getElementById('empty').style.display = 'block';
     }
   }
 
   chargerTout();
-  chargerDate();
 </script>
 </body>
 </html>
