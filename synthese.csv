@@ -1,0 +1,11 @@
+Formation,Nombre de remarques,Points positifs,Axes d'amélioration,Recommandations / Pistes d'action
+CAEERS Initial,2,"Erreur : Erreur API 503 : {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,
+CFBS,1,Bon accueil et formateurs sympathiques.,"Nécessité d'augmenter la part de travaux pratiques par rapport aux devoirs, combinaisons de protection hors service, et température trop basse dans les salles.","Remplacer les combinaisons défectueuses, contrôler le chauffage des salles de cours et rééquilibrer le programme pédagogique au profit des travaux pratiques."
+CGO,2,Aucun point positif mentionné,Aucun axe d'amélioration mentionné,Aucune action particulière
